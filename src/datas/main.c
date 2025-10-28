@@ -3,29 +3,44 @@
 #include <string.h>
 #include <stdlib.h>
 
-void makePushToTheRepo(const char *branch, const char *commitMessage)
+void makePushToTheRepo(const char *branch, const char *commitMessage, const char *filePath)
 {
     char pushCommand[256];
-    snprintf(pushCommand, sizeof(pushCommand), "git checkout -B %s", branch);
+    snprintf(pushCommand, sizeof(pushCommand), "git checkout %s 2>/dev/null || git checkout -b %s", branch, branch);
     if(system(pushCommand) != 0)
     {
-        printf("Erro ao trocar para a branch %s\n", branch);
+        printf("Erro ao trocar/criar para a branch %s\n", branch);
         return;
     }
-    if(system("git add ../Topics/*") != 0)
+
+    if(filePath != NULL && strlen(filePath) > 0)
     {
-        printf("Erro ao adicionar arquivos.\n");
+        snprintf(pushCommand, sizeof(pushCommand), "git add %s", filePath);
+    }
+    else
+    {
+        snprintf(pushCommand, sizeof(pushCommand), "git add .");
+    }
+    if(system(pushCommand) != 0)
+    {
+        printf("❌ Erro ao adicionar arquivos (%s)\n", filePath ? filePath : ".");
         return;
     }
+    if(system(pushCommand) != 0)
+    {
+        printf("Erro ao atualizar a branch %s\n", branch);
+        return;
+    }
+
     snprintf(pushCommand, sizeof(pushCommand), "git commit -a -m '%s'", commitMessage);
     if(system(pushCommand) != 0)
     {
         printf("Erro ao commitar os conteudos.\n");
         return;
     }
-        printf("Enviando conteúdo para a cadeira de %s...\n", branch);
-        snprintf(pushCommand, sizeof(pushCommand), "git push origin %s", branch);
-        if(system(pushCommand) != 0)
+    printf("Enviando conteúdo para a cadeira de %s...\n", branch);
+    snprintf(pushCommand, sizeof(pushCommand), "git push origin %s", branch);
+    if(system(pushCommand) != 0)
         {
             printf("Erro ao enviar os conteudos para a branch %s. \n", branch);
             return;   
@@ -62,10 +77,11 @@ int main(void)
 
         printf("Sua opção:");
         scanf("%d", &branch);
+        system("clear");
 
         if(branch == 1)
         {
-            makePushToTheRepo("P1", "Novos conteudos");       
+            makePushToTheRepo("P1", "Novos conteudos", "../Topics/P1/teste.txt");       
         }
         else
         {
