@@ -56,6 +56,7 @@ int main(void)
 {
     int option;
     int branch;
+    char relativePath[100];
     printf("=================================");
     printf("\n\tGestão da Turma");
     printf("\n=================================\n");
@@ -77,11 +78,13 @@ int main(void)
 
         printf("Sua opção:");
         scanf("%d", &branch);
-        system("clear");
 
         if(branch == 1)
         {
-            makePushToTheRepo("P1", "Novos conteudos", "../Topics/P1/teste.txt");       
+            printf("Digite o caminho relativo do ficheiro a enviar (../Topics/P1/teste.txt):");
+            scanf("%s", relativePath);
+
+            makePushToTheRepo("P1", "Novos conteudos", relativePath);       
         }
         else
         {
