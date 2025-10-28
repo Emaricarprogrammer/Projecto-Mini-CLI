@@ -10,6 +10,7 @@ void requester(const char *requestType)
 void makePushToTheRepo(const char *branch)
 {
     printf("Enviando conteúdo para a cadeira de %s...\n", branch);
+    system("git branch P1");
     system("git add ../Topics/*");
     system("git commit -a -m 'Atualização de conteúdos'");
     char pushCommand[100];
