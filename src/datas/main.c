@@ -3,20 +3,34 @@
 #include <string.h>
 #include <stdlib.h>
 
-void requester(const char *requestType)
+void makePushToTheRepo(const char *branch, const char *commitMessage)
 {
-    
-}
-void makePushToTheRepo(const char *branch)
-{
-    printf("Enviando conteúdo para a cadeira de %s...\n", branch);
-    system("git branch P1");
-    system("git add ../Topics/*");
-    system("git commit -a -m 'Atualização de conteúdos'");
-    char pushCommand[100];
-    snprintf(pushCommand, sizeof(pushCommand), "git push origin %s", branch);
-    system(pushCommand);
-    printf("Conteúdo enviado com sucesso para a cadeira de %s!\n", branch);
+    char pushCommand[256];
+    snprintf(pushCommand, sizeof(pushCommand), "git checkout -B %s", branch);
+    if(system(pushCommand) != 0)
+    {
+        printf("Erro ao trocar para a branch %s\n", branch);
+        return;
+    }
+    if(system("git add ../Topics/*") != 0)
+    {
+        printf("Erro ao adicionar arquivos.\n");
+        return;
+    }
+    snprintf(pushCommand, sizeof(pushCommand), "git commit -a -m '%s'", commitMessage);
+    if(system(pushCommand) != 0)
+    {
+        printf("Erro ao commitar os conteudos.\n");
+        return;
+    }
+        printf("Enviando conteúdo para a cadeira de %s...\n", branch);
+        snprintf(pushCommand, sizeof(pushCommand), "git push origin %s", branch);
+        if(system(pushCommand) != 0)
+        {
+            printf("Erro ao enviar os conteudos para a branch %s. \n", branch);
+            return;   
+        }
+        printf("Conteúdo enviado com sucesso para a cadeira de %s!\n", branch);
 }
 void downloadTopics(const char *courseName)
 {
@@ -50,7 +64,7 @@ int main(void)
 
         if(branch == 1)
         {
-            makePushToTheRepo("P1");       
+            makePushToTheRepo("P1", "Novos conteudos");       
         }
         else
         {
