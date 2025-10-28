@@ -8,7 +8,7 @@
 #define analist "Emanuel Antonio - 20250072"
 #define programmer "Alberto dos Santos- 2025####"
 
-// Variável global para a lista de alunos
+// Variavel global para a lista de alunos
 ListaAlunos listaAlunos;
 
 void menuAdicionarAluno()
@@ -44,7 +44,7 @@ void menuAdicionarAluno()
     {
         printf("\n✅ Aluno adicionado com sucesso!\n");
         printf("Nome: %s\n", nome);
-        printf("N. Estudante: %s\n", numero_estudante);
+        printf("N Estudante: %s\n", numero_estudante);
         printf("Email: %s\n", email);
         printf("Contacto: %s\n", contacto);
         printf("Total de alunos: %d\n", listaAlunos.quantidade);
@@ -56,6 +56,37 @@ void menuAdicionarAluno()
     else if (resultado == -2)
     {
         printf("\n❌ Erro: Numero de estudante ja existe!\n");
+    }
+}
+
+void menuRemoverAluno()
+{
+    printf("\n=== REMOVER ALUNO ===\n");
+
+    char numero_estudante[20];
+    int resultado;
+
+    if (listaAlunos.quantidade == 0)
+    {
+        printf("Nenhum aluno cadastrado para remover.\n");
+        return;
+    }
+
+    printf("Numero de estudante do aluno a remover: ");
+    limparBuffer();
+    fgets(numero_estudante, 20, stdin);
+    numero_estudante[strcspn(numero_estudante, "\n")] = 0;
+
+    resultado = removerAluno(&listaAlunos, numero_estudante);
+
+    if (resultado == 0)
+    {
+        printf("\n✅ Aluno removido com sucesso!\n");
+        printf("Total de alunos: %d\n", listaAlunos.quantidade);
+    }
+    else
+    {
+        printf("\n❌ Erro: Aluno com numero de estudante '%s' nao encontrado!\n", numero_estudante);
     }
 }
 
@@ -74,8 +105,9 @@ void menuPrincipal()
     printf("3-Eleger delegado(a)\n");
     printf("4-Adicionar aluno\n");
     printf("5-Ver alunos cadastrados\n");
-    printf("6-Salvar dados\n");
-    printf("7-Carregar dados\n");
+    printf("6-Remover aluno\n");
+    printf("7-Salvar dados\n");
+    printf("8-Carregar dados\n");
     printf("0-Sair");
     printf("\n********************************************\n");
     printf("Opcao: ");
@@ -95,7 +127,7 @@ int main()
     }
     else
     {
-        printf("ℹ️  Nenhum ficheiro de dados encontrado. Começando com lista vazia.\n");
+        printf("ℹ️  Nenhum ficheiro de dados encontrado. Comecando com lista vazia.\n");
     }
 
     printf("==========================================\n");
@@ -135,6 +167,10 @@ int main()
             break;
 
         case 6:
+            menuRemoverAluno();
+            break;
+
+        case 7:
             if (salvarLista(&listaAlunos, "data/alunos.txt") == 0)
             {
                 printf("\n💾 Dados salvos com sucesso em data/alunos.txt! (%d alunos)\n", listaAlunos.quantidade);
@@ -145,14 +181,14 @@ int main()
             }
             break;
 
-        case 7:
+        case 8:
             if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
             {
                 printf("\n📂 Dados carregados com sucesso! (%d alunos)\n", listaAlunos.quantidade);
             }
             else
             {
-                printf("\n❌ Erro ao carregar dados! Ficheiro data/alunos.txt não encontrado.\n");
+                printf("\n❌ Erro ao carregar dados! Ficheiro data/alunos.txt nao encontrado.\n");
             }
             break;
 
@@ -163,7 +199,7 @@ int main()
             break;
 
         default:
-            printf("\n❌ Opção inválida! Tente novamente.\n");
+            printf("\n❌ Opcao invalida! Tente novamente.\n");
             break;
         }
 

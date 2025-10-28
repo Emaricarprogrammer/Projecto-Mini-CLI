@@ -17,22 +17,22 @@ void inicializarLista(ListaAlunos *lista)
 
 int adicionarAluno(ListaAlunos *lista, const char *nome, const char *numero_estudante, const char *email, const char *contacto)
 {
-    // Verificar se a lista está cheia
+    // Verificar se a lista esta cheia
     if (lista->quantidade >= MAX_ALUNOS)
     {
         return -1; // Lista cheia
     }
 
-    // Verificar se o número de estudante já existe
+    // Verificar se o numero de estudante ja existe
     for (int i = 0; i < lista->quantidade; i++)
     {
         if (strcmp(lista->alunos[i].numero_estudante, numero_estudante) == 0)
         {
-            return -2; // Número de estudante duplicado
+            return -2; // Numero de estudante duplicado
         }
     }
 
-    // Encontrar a posição correta para inserir em ordem alfabética
+    // Encontrar a posicao correta para inserir em ordem alfabetica
     int posicao = 0;
     while (posicao < lista->quantidade &&
            strcasecmp(nome, lista->alunos[posicao].nome) > 0)
@@ -40,7 +40,7 @@ int adicionarAluno(ListaAlunos *lista, const char *nome, const char *numero_estu
         posicao++;
     }
 
-    // Mover alunos para abrir espaço
+    // Mover alunos para abrir espaco
     for (int i = lista->quantidade; i > posicao; i--)
     {
         lista->alunos[i] = lista->alunos[i - 1];
@@ -72,7 +72,7 @@ void exibirAlunos(const ListaAlunos *lista)
     }
 
     printf("\n=== LISTA DE ALUNOS (Total: %d) ===\n", lista->quantidade);
-    printf("%-5s %-25s %-15s %-25s %-15s\n", "Pos", "Nome", "Nº Estudante", "Email", "Contacto");
+    printf("%-5s %-25s %-15s %-25s %-15s\n", "Pos", "Nome", "N Estudante", "Email", "Contacto");
     printf("----------------------------------------------------------------------------------------\n");
 
     for (int i = 0; i < lista->quantidade; i++)

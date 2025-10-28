@@ -20,7 +20,7 @@ typedef struct
     int quantidade;
 } ListaAlunos;
 
-// Funções para manipulação da lista
+// Funcoes para manipulacao da lista
 void inicializarLista(ListaAlunos *lista);
 int adicionarAluno(ListaAlunos *lista, const char *nome, const char *numero_estudante, const char *email, const char *contacto);
 void exibirAlunos(const ListaAlunos *lista);
