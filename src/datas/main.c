@@ -2,6 +2,7 @@
 //#include <curl/curl.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void makePushToTheRepo(const char *branch, const char *commitMessage, const char *filePath)
 {
@@ -56,7 +57,8 @@ int main(void)
 {
     int option;
     int branch;
-    char relativePath[100];
+    char relativePath[256];
+    char finalPath[512];
     printf("=================================");
     printf("\n\tGestão da Turma");
     printf("\n=================================\n");
@@ -81,10 +83,16 @@ int main(void)
 
         if(branch == 1)
         {
-            printf("Digite o caminho relativo do ficheiro a enviar (../Topics/P1/teste.txt):");
+            printf("Digite o nome do ficheiro a enviar (teste.txt):");
             scanf("%s", relativePath);
 
-            makePushToTheRepo("P1", "Novos conteudos", relativePath);       
+            snprintf(finalPath, sizeof(finalPath), "../Topics/P1/%s", relativePath);
+            if(access(finalPath, F_OK) != 0)
+            {
+                printf("❌ Ficheiro não encontrado no directorio: %s\n", finalPath);
+                return 1;
+            }
+            makePushToTheRepo("P1", "Novos conteudos", finalPath);       
         }
         else
         {
