@@ -42,7 +42,7 @@ void menuAdicionarAluno()
 
     if (resultado >= 0)
     {
-        printf("\n✅ Aluno adicionado com sucesso!\n");
+        printf("\n Aluno adicionado com sucesso!\n");
         printf("Nome: %s\n", nome);
         printf("N Estudante: %s\n", numero_estudante);
         printf("Email: %s\n", email);
@@ -51,11 +51,11 @@ void menuAdicionarAluno()
     }
     else if (resultado == -1)
     {
-        printf("\n❌ Erro: Lista de alunos esta cheia! (Maximo: %d)\n", MAX_ALUNOS);
+        printf("\n Erro: Lista de alunos esta cheia! (Maximo: %d)\n", MAX_ALUNOS);
     }
     else if (resultado == -2)
     {
-        printf("\n❌ Erro: Numero de estudante ja existe!\n");
+        printf("\n Erro: Numero de estudante ja existe!\n");
     }
 }
 
@@ -81,12 +81,12 @@ void menuRemoverAluno()
 
     if (resultado == 0)
     {
-        printf("\n✅ Aluno removido com sucesso!\n");
+        printf("\n Aluno removido com sucesso!\n");
         printf("Total de alunos: %d\n", listaAlunos.quantidade);
     }
     else
     {
-        printf("\n❌ Erro: Aluno com numero de estudante '%s' nao encontrado!\n", numero_estudante);
+        printf("\n Erro: Aluno com numero de estudante '%s' nao encontrado!\n", numero_estudante);
     }
 }
 
@@ -123,11 +123,11 @@ int main()
     // Tentar carregar dados automaticamente do caminho data/alunos.txt
     if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
     {
-        printf("✅ Dados carregados automaticamente! (%d alunos)\n", listaAlunos.quantidade);
+        printf(" Dados carregados automaticamente! (%d alunos)\n", listaAlunos.quantidade);
     }
     else
     {
-        printf("ℹ️  Nenhum ficheiro de dados encontrado. Comecando com lista vazia.\n");
+        printf("  Nenhum ficheiro de dados encontrado. Comecando com lista vazia.\n");
     }
 
     printf("==========================================\n");
@@ -147,15 +147,15 @@ int main()
         switch (option)
         {
         case 1:
-            printf("\n📥 Download de conteudos - Em desenvolvimento...\n");
+            printf("\n Download de conteudos - Em desenvolvimento...\n");
             break;
 
         case 2:
-            printf("\n🎲 Gerar grupos aleatorios - Em desenvolvimento...\n");
+            printf("\n Gerar grupos aleatorios - Em desenvolvimento...\n");
             break;
 
         case 3:
-            printf("\n🗳️ Eleger delegado(a) - Em desenvolvimento...\n");
+            printf("\n Eleger delegado(a) - Em desenvolvimento...\n");
             break;
 
         case 4:
@@ -173,33 +173,33 @@ int main()
         case 7:
             if (salvarLista(&listaAlunos, "data/alunos.txt") == 0)
             {
-                printf("\n💾 Dados salvos com sucesso em data/alunos.txt! (%d alunos)\n", listaAlunos.quantidade);
+                printf("\n Dados salvos com sucesso em data/alunos.txt! (%d alunos)\n", listaAlunos.quantidade);
             }
             else
             {
-                printf("\n❌ Erro ao salvar dados! Verifique se a pasta 'data' existe.\n");
+                printf("\n Erro ao salvar dados! Verifique se a pasta 'data' existe.\n");
             }
             break;
 
         case 8:
             if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
             {
-                printf("\n📂 Dados carregados com sucesso! (%d alunos)\n", listaAlunos.quantidade);
+                printf("\n Dados carregados com sucesso! (%d alunos)\n", listaAlunos.quantidade);
             }
             else
             {
-                printf("\n❌ Erro ao carregar dados! Ficheiro data/alunos.txt nao encontrado.\n");
+                printf("\n Erro ao carregar dados! Ficheiro data/alunos.txt nao encontrado.\n");
             }
             break;
 
         case 0:
             // Salvar automaticamente ao sair
             salvarLista(&listaAlunos, "data/alunos.txt");
-            printf("\n👋 Saindo do sistema... Dados salvos automaticamente em data/alunos.txt.\n");
+            printf("\n Saindo do sistema... Dados salvos automaticamente em data/alunos.txt.\n");
             break;
 
         default:
-            printf("\n❌ Opcao invalida! Tente novamente.\n");
+            printf("\n Opcao invalida! Tente novamente.\n");
             break;
         }
 
