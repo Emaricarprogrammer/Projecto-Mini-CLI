@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "alunos.h"
+#include "grupos.h"
 
 #define name_project "Mini CLI para gestao de turmas."
 #define grupo "10"
@@ -8,8 +9,9 @@
 #define analist "Emanuel Antonio - 20250072"
 #define programmer "Alberto dos Santos- 2025####"
 
-// Variavel global para a lista de alunos
+// Variaveis globais
 ListaAlunos listaAlunos;
+ListaGrupos listaGrupos;
 
 void menuAdicionarAluno()
 {
@@ -42,7 +44,7 @@ void menuAdicionarAluno()
 
     if (resultado >= 0)
     {
-        printf("\n Aluno adicionado com sucesso!\n");
+        printf("\nAluno adicionado com sucesso!\n");
         printf("Nome: %s\n", nome);
         printf("N Estudante: %s\n", numero_estudante);
         printf("Email: %s\n", email);
@@ -51,11 +53,11 @@ void menuAdicionarAluno()
     }
     else if (resultado == -1)
     {
-        printf("\n Erro: Lista de alunos esta cheia! (Maximo: %d)\n", MAX_ALUNOS);
+        printf("\nErro: Lista de alunos esta cheia! (Maximo: %d)\n", MAX_ALUNOS);
     }
     else if (resultado == -2)
     {
-        printf("\n Erro: Numero de estudante ja existe!\n");
+        printf("\nErro: Numero de estudante ja existe!\n");
     }
 }
 
@@ -81,12 +83,12 @@ void menuRemoverAluno()
 
     if (resultado == 0)
     {
-        printf("\n Aluno removido com sucesso!\n");
+        printf("\nAluno removido com sucesso!\n");
         printf("Total de alunos: %d\n", listaAlunos.quantidade);
     }
     else
     {
-        printf("\n Erro: Aluno com numero de estudante '%s' nao encontrado!\n", numero_estudante);
+        printf("\nErro: Aluno com numero de estudante '%s' nao encontrado!\n", numero_estudante);
     }
 }
 
@@ -94,6 +96,81 @@ void menuVerAlunos()
 {
     printf("\n=== LISTA DE ALUNOS ===\n");
     exibirAlunos(&listaAlunos);
+}
+
+void menuGerarGrupos()
+{
+    printf("\n=== GERAR GRUPOS ALEATORIOS ===\n");
+
+    if (listaAlunos.quantidade == 0)
+    {
+        printf("Nenhum aluno cadastrado. Adicione alunos primeiro.\n");
+        return;
+    }
+
+    char disciplina[MAX_DISCIPLINA];
+    char tema[MAX_TEMA];
+    int elementos_por_grupo;
+
+    printf("Disciplina: ");
+    limparBuffer();
+    fgets(disciplina, MAX_DISCIPLINA, stdin);
+    disciplina[strcspn(disciplina, "\n")] = 0;
+
+    printf("Tema do projeto: ");
+    fgets(tema, MAX_TEMA, stdin);
+    tema[strcspn(tema, "\n")] = 0;
+
+    printf("Numero de elementos por grupo: ");
+    scanf("%d", &elementos_por_grupo);
+
+    printf("\nGrupos existentes: %d\n", listaGrupos.num_grupos);
+
+    int resultado = gerarGruposAutomaticos(&listaGrupos, &listaAlunos, elementos_por_grupo, disciplina, tema);
+
+    if (resultado > 0)
+    {
+        printf("\n%d novos grupos criados com sucesso!\n", resultado);
+        printf("Total de grupos agora: %d\n", listaGrupos.num_grupos);
+        exibirGrupos(&listaGrupos);
+
+        // Perguntar se quer enviar emails
+        printf("\nDeseja enviar emails de notificacao para os alunos? (s/n): ");
+        limparBuffer();
+        char resposta = getchar();
+
+        if (resposta == 's' || resposta == 'S')
+        {
+            enviarEmailGrupos(&listaGrupos);
+        }
+
+        // Salvar grupos automaticamente
+        salvarGrupos(&listaGrupos, "data/grupos.txt");
+    }
+    else if (resultado == -1)
+    {
+        printf("\nErro: Nenhum aluno cadastrado.\n");
+    }
+    else if (resultado == -2)
+    {
+        printf("\nErro: Numero de elementos por grupo invalido.\n");
+    }
+    else if (resultado == -3)
+    {
+        printf("\nErro: Numero de grupos excede o limite maximo.\n");
+    }
+}
+
+void menuVerGrupos()
+{
+    printf("\n=== GRUPOS CRIADOS ===\n");
+    exibirGrupos(&listaGrupos);
+}
+
+void menuEnviarEmails()
+{
+    printf("\n=== ENVIAR EMAILS PARA GRUPOS ===\n");
+    enviarEmailGrupos(&listaGrupos);
 }
 
 void menuPrincipal()
@@ -106,8 +183,10 @@ void menuPrincipal()
     printf("4-Adicionar aluno\n");
     printf("5-Ver alunos cadastrados\n");
     printf("6-Remover aluno\n");
-    printf("7-Salvar dados\n");
-    printf("8-Carregar dados\n");
+    printf("7-Ver grupos criados\n");
+    printf("8-Enviar emails para grupos\n");
+    printf("9-Salvar dados\n");
+    printf("10-Carregar dados\n");
     printf("0-Sair");
     printf("\n********************************************\n");
     printf("Opcao: ");
@@ -117,17 +196,19 @@ int main()
 {
     int option;
 
-    // Inicializar a lista de alunos
+    // Inicializar as listas
     inicializarLista(&listaAlunos);
+    inicializarListaGrupos(&listaGrupos);
 
-    // Tentar carregar dados automaticamente do caminho data/alunos.txt
+    // Tentar carregar dados automaticamente
     if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
     {
-        printf(" Dados carregados automaticamente! (%d alunos)\n", listaAlunos.quantidade);
+        printf("Dados de alunos carregados! (%d alunos)\n", listaAlunos.quantidade);
     }
-    else
+
+    if (carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
     {
-        printf("  Nenhum ficheiro de dados encontrado. Comecando com lista vazia.\n");
+        printf("Grupos carregados! (%d grupos)\n", listaGrupos.num_grupos);
     }
 
     printf("==========================================\n");
@@ -147,15 +228,15 @@ int main()
         switch (option)
         {
         case 1:
-            printf("\n Download de conteudos - Em desenvolvimento...\n");
+            printf("\nDownload de conteudos - Em desenvolvimento...\n");
             break;
 
         case 2:
-            printf("\n Gerar grupos aleatorios - Em desenvolvimento...\n");
+            menuGerarGrupos();
             break;
 
         case 3:
-            printf("\n Eleger delegado(a) - Em desenvolvimento...\n");
+            printf("\nEleger delegado(a) - Em desenvolvimento...\n");
             break;
 
         case 4:
@@ -171,35 +252,48 @@ int main()
             break;
 
         case 7:
-            if (salvarLista(&listaAlunos, "data/alunos.txt") == 0)
-            {
-                printf("\n Dados salvos com sucesso em data/alunos.txt! (%d alunos)\n", listaAlunos.quantidade);
-            }
-            else
-            {
-                printf("\n Erro ao salvar dados! Verifique se a pasta 'data' existe.\n");
-            }
+            menuVerGrupos();
             break;
 
         case 8:
-            if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
+            menuEnviarEmails();
+            break;
+
+        case 9:
+            if (salvarLista(&listaAlunos, "data/alunos.txt") == 0 &&
+                salvarGrupos(&listaGrupos, "data/grupos.txt") == 0)
             {
-                printf("\n Dados carregados com sucesso! (%d alunos)\n", listaAlunos.quantidade);
+                printf("\nTodos os dados salvos com sucesso!\n");
+                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
             }
             else
             {
-                printf("\n Erro ao carregar dados! Ficheiro data/alunos.txt nao encontrado.\n");
+                printf("\nErro ao salvar dados!\n");
+            }
+            break;
+
+        case 10:
+            if (carregarLista(&listaAlunos, "data/alunos.txt") == 0 &&
+                carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
+            {
+                printf("\nTodos os dados carregados com sucesso!\n");
+                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
+            }
+            else
+            {
+                printf("\nErro ao carregar dados!\n");
             }
             break;
 
         case 0:
             // Salvar automaticamente ao sair
             salvarLista(&listaAlunos, "data/alunos.txt");
-            printf("\n Saindo do sistema... Dados salvos automaticamente em data/alunos.txt.\n");
+            salvarGrupos(&listaGrupos, "data/grupos.txt");
+            printf("\nSaindo do sistema... Dados salvos automaticamente.\n");
             break;
 
         default:
-            printf("\n Opcao invalida! Tente novamente.\n");
+            printf("\nOpcao invalida! Tente novamente.\n");
             break;
         }
 
@@ -213,6 +307,6 @@ int main()
 }
 
 /*
-gcc data\main.c src\alunos.c -Iinclude -o main.exe
-main.exe
+gcc data\main.c src\alunos.c src\grupos.c -Iinclude -o programa.exe
+programa.exe
 */

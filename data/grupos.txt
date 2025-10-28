@@ -1,0 +1,36 @@
+Grupo:1;Disciplina:MIC;Tema:MIC
+Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
+Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
+FIM_GRUPO
+Grupo:2;Disciplina:MIC;Tema:MIC
+Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
+Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
+FIM_GRUPO
+Grupo:3;Disciplina:Logica Matematica;Tema:Proposicoes
+Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
+Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
+FIM_GRUPO
+Grupo:4;Disciplina:Logica Matematica;Tema:Proposicoes
+Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
+Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
+FIM_GRUPO
+Grupo:5;Disciplina:Ingles;Tema:IA
+Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
+Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
+FIM_GRUPO
+Grupo:6;Disciplina:Ingles;Tema:IA
+Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
+Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
+FIM_GRUPO
+Grupo:7;Disciplina:Analise Matematica;Tema:Analise
+Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
+FIM_GRUPO
+Grupo:8;Disciplina:Analise Matematica;Tema:Analise
+Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
+FIM_GRUPO
+Grupo:9;Disciplina:Analise Matematica;Tema:Analise
+Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
+FIM_GRUPO
+Grupo:10;Disciplina:Analise Matematica;Tema:Analise
+Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
+FIM_GRUPO
