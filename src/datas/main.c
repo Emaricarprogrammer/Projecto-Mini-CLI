@@ -32,9 +32,10 @@ void makePushToTheRepo(const char *branch, const char *commitMessage)
         }
         printf("Conteúdo enviado com sucesso para a cadeira de %s!\n", branch);
 }
-void downloadTopics(const char *courseName)
+
+void downloadTopics(const char *branchName)
 {
-    printf("Conteúdos do curso %s foram baixados com sucesso!\n", courseName);
+    printf("Conteúdos do curso %s foram baixados com sucesso!\n", branchName);
 }
 int main(void)
 {
