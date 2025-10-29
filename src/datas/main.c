@@ -1,64 +1,19 @@
 #include <stdio.h>
-//#include <curl/curl.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include "../includes/github.h"
+#include "../includes/generate-groups.h"
 #include <unistd.h>
+#include <time.h>
 
-void makePushToTheRepo(const char *branch, const char *commitMessage, const char *filePath)
-{
-    char pushCommand[256];
-    snprintf(pushCommand, sizeof(pushCommand), "git checkout %s 2>/dev/null || git checkout -b %s", branch, branch);
-    if(system(pushCommand) != 0)
-    {
-        printf("Erro ao trocar/criar para a branch %s\n", branch);
-        return;
-    }
-
-    if(filePath != NULL && strlen(filePath) > 0)
-    {
-        snprintf(pushCommand, sizeof(pushCommand), "git add %s", filePath);
-    }
-    else
-    {
-        snprintf(pushCommand, sizeof(pushCommand), "git add .");
-    }
-    if(system(pushCommand) != 0)
-    {
-        printf("❌ Erro ao adicionar arquivos (%s)\n", filePath ? filePath : ".");
-        return;
-    }
-    if(system(pushCommand) != 0)
-    {
-        printf("Erro ao atualizar a branch %s\n", branch);
-        return;
-    }
-
-    snprintf(pushCommand, sizeof(pushCommand), "git commit -a -m '%s'", commitMessage);
-    if(system(pushCommand) != 0)
-    {
-        printf("Erro ao commitar os conteudos.\n");
-        return;
-    }
-    printf("Enviando conteúdo para a cadeira de %s...\n", branch);
-    snprintf(pushCommand, sizeof(pushCommand), "git push origin %s", branch);
-    if(system(pushCommand) != 0)
-        {
-            printf("Erro ao enviar os conteudos para a branch %s. \n", branch);
-            return;   
-        }
-        printf("Conteúdo enviado com sucesso para a cadeira de %s!\n", branch);
-}
-
-void downloadTopics(const char *branchName)
-{
-    printf("Conteúdos do curso %s foram baixados com sucesso!\n", branchName);
-}
 int main(void)
 {
     int option;
     int branch;
     char relativePath[256];
     char finalPath[512];
+    int groupSize;
+
     printf("=================================");
     printf("\n\tGestão da Turma");
     printf("\n=================================\n");
@@ -76,13 +31,20 @@ int main(void)
         printf("\n Cadeiras disponiveis ");
         printf("\n=================================\n");
         printf("\n 1- Programação 1");
-        printf("\n 2 - Sair\n");
+        printf("\n 2- Comunicação escrita");
+        printf("\n 3- Análise matemática\n");
+        printf("\n 4- Lógica matemática\n");
+        printf("\n 5- INglês técnico\n");
+        printf("\n 6- Mic\n");
+        printf("\n 7- ICC\n");
+        printf("\n 8 - Sair\n");
 
         printf("Sua opção:");
         scanf("%d", &branch);
 
         if(branch == 1)
         {
+            printf("=================================");
             printf("Digite o nome do ficheiro a enviar (teste.txt):");
             scanf("%s", relativePath);
 
@@ -101,14 +63,38 @@ int main(void)
     }
     else if (option == 2)
     {
-        char courseName[50];
-        printf("Digite o nome do curso:");
-        scanf("%s", courseName);
-        downloadTopics(courseName);
+        printf("=================================");
+        printf("\n Cadeiras disponiveis ");
+        printf("\n=================================\n");
+        printf("\n 1- Programação 1");
+        printf("\n 2- Comunicação escrita");
+        printf("\n 3- Análise matemática\n");
+        printf("\n 4- Lógica matemática\n");
+        printf("\n 5- INglês técnico\n");
+        printf("\n 6- Mic\n");
+        printf("\n 7- ICC\n");
+        printf("\n 8 - Sair\n");
+
+        printf("\nSua opção:\n");
+        scanf("%d", &branch);
+        if(branch == 1)
+        {
+            system("clear");
+            printf("=================================");
+            downloadTopics("P1");
+        }
+        else
+        {
+            printf("Opção inválida!\n");
+        }
     }
     else if (option == 3)
     {
-        printf("Grupos aleatórios gerados com sucesso!\n");
+        system("clear");
+        printf("=================================\n");
+        printf("Informe a quantidade de elementos para cada grupo: ");
+        scanf("%d", &groupSize);
+        generateRandomGroups("../../alunos.txt", groupSize);
     }
     else if (option == 4)
     {
