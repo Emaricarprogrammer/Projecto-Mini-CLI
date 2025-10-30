@@ -7,6 +7,7 @@
 void inicializarListaGrupos(ListaGrupos *lista)
 {
     lista->num_grupos = 0;
+    lista->proximo_id = 1; // Comecar IDs a partir de 1
 }
 
 int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int elementos_por_grupo, const char *disciplina, const char *tema)
@@ -54,8 +55,10 @@ int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int el
     {
         Grupo *grupo = &lista->grupos[lista->num_grupos];
 
-        // Numeracao comeca de 1 sempre
-        grupo->numero_grupo = lista->num_grupos + 1;
+        // Atribuir ID unico e numero do grupo
+        grupo->id_grupo = lista->proximo_id++; // ID unico que nunca se repete
+        grupo->numero_grupo = i + 1;           // Numero do grupo (1, 2, 3... pode repetir)
+
         strncpy(grupo->disciplina, disciplina, MAX_DISCIPLINA - 1);
         grupo->disciplina[MAX_DISCIPLINA - 1] = '\0';
 
@@ -77,8 +80,8 @@ int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int el
         if (grupo->num_elementos > 0)
         {
             grupo->indice_lider = 0; // Primeiro aluno do grupo sera o lider
-            printf("Lider automaticamente escolhido para o Grupo %d: %s\n",
-                   grupo->numero_grupo, grupo->elementos[0].nome);
+            printf("Lider automaticamente escolhido para o Grupo %d (ID: %d): %s\n",
+                   grupo->numero_grupo, grupo->id_grupo, grupo->elementos[0].nome);
         }
         else
         {
@@ -104,7 +107,7 @@ void exibirGrupos(const ListaGrupos *lista)
     {
         const Grupo *grupo = &lista->grupos[i];
 
-        printf("\n--- GRUPO %d ---\n", grupo->numero_grupo);
+        printf("\n--- GRUPO %d (ID: %d) ---\n", grupo->numero_grupo, grupo->id_grupo);
         printf("Disciplina: %s\n", grupo->disciplina);
         printf("Tema do Projeto: %s\n", grupo->tema);
 
@@ -142,11 +145,15 @@ int salvarGrupos(const ListaGrupos *lista, const char *filename)
         return -1;
     }
 
+    // Salvar o proximo ID primeiro
+    fprintf(arquivo, "PROXIMO_ID:%d\n", lista->proximo_id);
+
     for (int i = 0; i < lista->num_grupos; i++)
     {
         const Grupo *grupo = &lista->grupos[i];
 
-        fprintf(arquivo, "Grupo:%d;Disciplina:%s;Tema:%s;Lider:%d\n",
+        fprintf(arquivo, "Grupo:ID:%d;Numero:%d;Disciplina:%s;Tema:%s;Lider:%d\n",
+                grupo->id_grupo,
                 grupo->numero_grupo,
                 grupo->disciplina,
                 grupo->tema,
@@ -186,7 +193,11 @@ int carregarGrupos(ListaGrupos *lista, const char *filename)
     {
         linha[strcspn(linha, "\n")] = 0;
 
-        if (strncmp(linha, "Grupo:", 6) == 0)
+        if (strncmp(linha, "PROXIMO_ID:", 11) == 0)
+        {
+            sscanf(linha, "PROXIMO_ID:%d", &lista->proximo_id);
+        }
+        else if (strncmp(linha, "Grupo:ID:", 9) == 0)
         {
             if (lendo_grupo)
             {
@@ -194,7 +205,8 @@ int carregarGrupos(ListaGrupos *lista, const char *filename)
                 lista->num_grupos++;
             }
 
-            sscanf(linha, "Grupo:%d;Disciplina:%[^;];Tema:%[^;];Lider:%d",
+            sscanf(linha, "Grupo:ID:%d;Numero:%d;Disciplina:%[^;];Tema:%[^;];Lider:%d",
+                   &grupo_atual.id_grupo,
                    &grupo_atual.numero_grupo,
                    grupo_atual.disciplina,
                    grupo_atual.tema,
@@ -251,7 +263,7 @@ int enviarEmailReal(const char *para, const char *assunto, const char *mensagem)
              "$SmtpServer = 'smtp.gmail.com'; "
              "$SmtpPort = 587; "
              "$Username = 'arturmakumbapaulo@gmail.com'; "
-             "$Password = 'trrw akmf iuam kgys'; "
+             "$Password = 'vpio xaja onom vkuq'; "
              "$To = '%s'; "
              "$Subject = '%s'; "
              "$Body = Get-Content 'temp_email.txt' -Raw; "
@@ -304,7 +316,7 @@ void enviarEmailGrupos(const ListaGrupos *lista)
     {
         const Grupo *grupo = &lista->grupos[i];
 
-        printf("\n--- Enviando emails para Grupo %d ---\n", grupo->numero_grupo);
+        printf("\n--- Enviando emails para Grupo %d (ID: %d) ---\n", grupo->numero_grupo, grupo->id_grupo);
 
         for (int j = 0; j < grupo->num_elementos; j++)
         {
@@ -319,10 +331,10 @@ void enviarEmailGrupos(const ListaGrupos *lista)
 
             snprintf(mensagem, sizeof(mensagem),
                      "Prezado(a) %s,\n\n"
-                     "Voce foi atribuido(a) ao Grupo %d da disciplina '%s'.\n"
+                     "Voce foi atribuido(a) ao Grupo %d (ID: %d) da disciplina '%s'.\n"
                      "Tema do projeto: %s\n\n"
                      "Colegas do seu grupo:\n",
-                     aluno->nome, grupo->numero_grupo, grupo->disciplina, grupo->tema);
+                     aluno->nome, grupo->numero_grupo, grupo->id_grupo, grupo->disciplina, grupo->tema);
 
             // Adicionar apenas nomes dos colegas
             for (int k = 0; k < grupo->num_elementos; k++)
@@ -361,7 +373,7 @@ void enviarEmailGrupos(const ListaGrupos *lista)
     printf("Total de emails processados: %d\n", emails_enviados + emails_erro);
 }
 
-void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo)
+void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int id_grupo)
 {
     if (lista->num_grupos == 0)
     {
@@ -369,11 +381,11 @@ void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo)
         return;
     }
 
-    // Encontrar o grupo especifico
+    // Encontrar o grupo especifico pelo ID
     const Grupo *grupo_alvo = NULL;
     for (int i = 0; i < lista->num_grupos; i++)
     {
-        if (lista->grupos[i].numero_grupo == numero_grupo)
+        if (lista->grupos[i].id_grupo == id_grupo)
         {
             grupo_alvo = &lista->grupos[i];
             break;
@@ -382,16 +394,16 @@ void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo)
 
     if (grupo_alvo == NULL)
     {
-        printf("Grupo %d nao encontrado.\n", numero_grupo);
+        printf("Grupo com ID %d nao encontrado.\n", id_grupo);
         return;
     }
 
-    printf("\n=== ENVIANDO EMAILS APENAS PARA O GRUPO %d ===\n", numero_grupo);
+    printf("\n=== ENVIANDO EMAILS APENAS PARA O GRUPO %d (ID: %d) ===\n", grupo_alvo->numero_grupo, id_grupo);
 
     int emails_enviados = 0;
     int emails_erro = 0;
 
-    printf("\n--- Enviando emails para Grupo %d ---\n", grupo_alvo->numero_grupo);
+    printf("\n--- Enviando emails para Grupo %d (ID: %d) ---\n", grupo_alvo->numero_grupo, grupo_alvo->id_grupo);
     printf("Disciplina: %s\n", grupo_alvo->disciplina);
     printf("Tema: %s\n", grupo_alvo->tema);
 
@@ -408,12 +420,11 @@ void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo)
 
         snprintf(mensagem, sizeof(mensagem),
                  "Prezado(a) %s,\n\n"
-                 "Voce foi atribuido(a) ao Grupo %d da disciplina '%s'.\n"
+                 "Voce foi atribuido(a) ao Grupo %d (ID: %d) da disciplina '%s'.\n"
                  "Tema do projeto: %s\n\n"
                  "Colegas do seu grupo:\n",
-                 aluno->nome, grupo_alvo->numero_grupo, grupo_alvo->disciplina, grupo_alvo->tema);
+                 aluno->nome, grupo_alvo->numero_grupo, grupo_alvo->id_grupo, grupo_alvo->disciplina, grupo_alvo->tema);
 
-        // Adicionar apenas nomes dos colegas
         for (int k = 0; k < grupo_alvo->num_elementos; k++)
         {
             char colega_info[100];
@@ -443,13 +454,13 @@ void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo)
         printf("----------------------------------------\n");
     }
 
-    printf("\n=== RESUMO DO ENVIO PARA GRUPO %d ===\n", numero_grupo);
+    printf("\n=== RESUMO DO ENVIO PARA GRUPO %d (ID: %d) ===\n", grupo_alvo->numero_grupo, id_grupo);
     printf("Emails enviados com sucesso: %d\n", emails_enviados);
     printf("Emails com erro: %d\n", emails_erro);
     printf("Total de emails processados: %d\n", emails_enviados + emails_erro);
 }
 
-void escolherLiderGrupo(ListaGrupos *lista, int numero_grupo)
+void escolherLiderGrupo(ListaGrupos *lista, int id_grupo)
 {
     if (lista->num_grupos == 0)
     {
@@ -457,11 +468,11 @@ void escolherLiderGrupo(ListaGrupos *lista, int numero_grupo)
         return;
     }
 
-    // Encontrar o grupo especifico
+    // Encontrar o grupo especifico pelo ID
     Grupo *grupo_alvo = NULL;
     for (int i = 0; i < lista->num_grupos; i++)
     {
-        if (lista->grupos[i].numero_grupo == numero_grupo)
+        if (lista->grupos[i].id_grupo == id_grupo)
         {
             grupo_alvo = &lista->grupos[i];
             break;
@@ -470,11 +481,11 @@ void escolherLiderGrupo(ListaGrupos *lista, int numero_grupo)
 
     if (grupo_alvo == NULL)
     {
-        printf("Grupo %d nao encontrado.\n", numero_grupo);
+        printf("Grupo com ID %d nao encontrado.\n", id_grupo);
         return;
     }
 
-    printf("\n=== ESCOLHER LIDER PARA GRUPO %d ===\n", numero_grupo);
+    printf("\n=== ESCOLHER LIDER PARA GRUPO %d (ID: %d) ===\n", grupo_alvo->numero_grupo, id_grupo);
     printf("Disciplina: %s\n", grupo_alvo->disciplina);
     printf("Tema: %s\n", grupo_alvo->tema);
     printf("Membros do grupo:\n");

@@ -10,18 +10,20 @@
 
 typedef struct
 {
+    int id_grupo;
     int numero_grupo;
     char disciplina[MAX_DISCIPLINA];
     char tema[MAX_TEMA];
     Aluno elementos[MAX_ELEMENTOS_POR_GRUPO];
     int num_elementos;
-    int indice_lider; // Indice do lider no array de elementos
+    int indice_lider;
 } Grupo;
 
 typedef struct
 {
     Grupo grupos[MAX_GRUPOS];
     int num_grupos;
+    int proximo_id;
 } ListaGrupos;
 
 // Funcoes para manipulacao de grupos
@@ -32,7 +34,7 @@ int salvarGrupos(const ListaGrupos *lista, const char *filename);
 int carregarGrupos(ListaGrupos *lista, const char *filename);
 int enviarEmailReal(const char *para, const char *assunto, const char *mensagem);
 void enviarEmailGrupos(const ListaGrupos *lista);
-void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo);
-void escolherLiderGrupo(ListaGrupos *lista, int numero_grupo);
+void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int id_grupo);
+void escolherLiderGrupo(ListaGrupos *lista, int id_grupo);
 
 #endif

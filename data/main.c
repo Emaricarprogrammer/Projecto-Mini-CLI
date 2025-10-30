@@ -207,11 +207,11 @@ void menuEscolherLider()
 
     exibirGrupos(&listaGrupos);
 
-    int numero_grupo;
-    printf("\nDigite o numero do grupo para escolher lider: ");
-    scanf("%d", &numero_grupo);
+    int id_grupo;
+    printf("\nDigite o ID do grupo para escolher lider: ");
+    scanf("%d", &id_grupo);
 
-    escolherLiderGrupo(&listaGrupos, numero_grupo);
+    escolherLiderGrupo(&listaGrupos, id_grupo);
 
     // Salvar apos escolher lider
     salvarGrupos(&listaGrupos, "data/grupos.txt");
@@ -229,11 +229,11 @@ void menuEnviarEmailsGrupoEspecifico()
 
     exibirGrupos(&listaGrupos);
 
-    int numero_grupo;
-    printf("\nDigite o numero do grupo para enviar emails: ");
-    scanf("%d", &numero_grupo);
+    int id_grupo;
+    printf("\nDigite o ID do grupo para enviar emails: ");
+    scanf("%d", &id_grupo);
 
-    enviarEmailGrupoEspecifico(&listaGrupos, numero_grupo);
+    enviarEmailGrupoEspecifico(&listaGrupos, id_grupo);
 }
 
 void menuEnviarEmailsTodosGrupos()
@@ -242,24 +242,163 @@ void menuEnviarEmailsTodosGrupos()
     enviarEmailGrupos(&listaGrupos);
 }
 
+void subMenuAlunos()
+{
+    int opcao;
+    do
+    {
+        printf("\n=== GESTAO DE ALUNOS ===\n");
+        printf("1. Adicionar aluno\n");
+        printf("2. Ver alunos cadastrados\n");
+        printf("3. Remover aluno\n");
+        printf("0. Voltar ao menu principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+            menuAdicionarAluno();
+            break;
+        case 2:
+            menuVerAlunos();
+            break;
+        case 3:
+            menuRemoverAluno();
+            break;
+        case 0:
+            printf("Voltando ao menu principal...\n");
+            break;
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+    } while (opcao != 0);
+}
+
+void subMenuGrupos()
+{
+    int opcao;
+    do
+    {
+        printf("\n=== GESTAO DE GRUPOS ===\n");
+        printf("1. Gerar grupos aleatorios\n");
+        printf("2. Ver grupos criados\n");
+        printf("3. Escolher lider para grupo\n");
+        printf("4. Enviar emails para grupo especifico\n");
+        printf("5. Enviar emails para todos os grupos\n");
+        printf("0. Voltar ao menu principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+            menuGerarGrupos();
+            break;
+        case 2:
+            menuVerGrupos();
+            break;
+        case 3:
+            menuEscolherLider();
+            break;
+        case 4:
+            menuEnviarEmailsGrupoEspecifico();
+            break;
+        case 5:
+            menuEnviarEmailsTodosGrupos();
+            break;
+        case 0:
+            printf("Voltando ao menu principal...\n");
+            break;
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+    } while (opcao != 0);
+}
+
+void subMenuDados()
+{
+    int opcao;
+    do
+    {
+        printf("\n=== GESTAO DE DADOS ===\n");
+        printf("1. Salvar dados\n");
+        printf("2. Carregar dados\n");
+        printf("0. Voltar ao menu principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+            if (salvarLista(&listaAlunos, "data/alunos.txt") == 0 &&
+                salvarGrupos(&listaGrupos, "data/grupos.txt") == 0)
+            {
+                printf("\nTodos os dados salvos com sucesso!\n");
+                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
+            }
+            else
+            {
+                printf("\nErro ao salvar dados!\n");
+            }
+            break;
+        case 2:
+            if (carregarLista(&listaAlunos, "data/alunos.txt") == 0 &&
+                carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
+            {
+                printf("\nTodos os dados carregados com sucesso!\n");
+                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
+            }
+            else
+            {
+                printf("\nErro ao carregar dados!\n");
+            }
+            break;
+        case 0:
+            printf("Voltando ao menu principal...\n");
+            break;
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+    } while (opcao != 0);
+}
+
 void menuPrincipal()
 {
-    printf("\n********************************************\n");
-    printf("Escolha uma das opcoes: \n");
-    printf("1-Download de conteudos\n");
-    printf("2-Gerar grupos aleatorios\n");
-    printf("3-Eleger delegado(a)\n");
-    printf("4-Adicionar aluno\n");
-    printf("5-Ver alunos cadastrados\n");
-    printf("6-Remover aluno\n");
-    printf("7-Ver grupos criados\n");
-    printf("8-Escolher lider para grupo\n");
-    printf("9-Enviar emails para grupo especifico\n");
-    printf("10-Enviar emails para todos os grupos\n");
-    printf("11-Salvar dados\n");
-    printf("12-Carregar dados\n");
-    printf("0-Sair");
-    printf("\n********************************************\n");
+    printf("\n============================================\n");
+    printf("          SISTEMA DE GESTAO DE TURMAS       \n");
+    printf("============================================\n");
+    printf("1. Gestao de Alunos\n");
+    printf("2. Gestao de Grupos\n");
+    printf("3. Gestao de Dados\n");
+    printf("4. Download de conteudos\n");
+    printf("5. Eleger delegado(a)\n");
+    printf("0. Sair\n");
+    printf("============================================\n");
     printf("Opcao: ");
 }
 
@@ -295,73 +434,30 @@ int main()
     {
         menuPrincipal();
         scanf("%d", &option);
+        limparBuffer();
 
         switch (option)
         {
         case 1:
-            printf("\nDownload de conteudos - Em desenvolvimento...\n");
+            subMenuAlunos();
             break;
 
         case 2:
-            menuGerarGrupos();
+            subMenuGrupos();
             break;
 
         case 3:
-            printf("\nEleger delegado(a) - Em desenvolvimento...\n");
+            subMenuDados();
             break;
 
         case 4:
-            menuAdicionarAluno();
+            printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
+            printf("Esta funcionalidade esta em desenvolvimento...\n");
             break;
 
         case 5:
-            menuVerAlunos();
-            break;
-
-        case 6:
-            menuRemoverAluno();
-            break;
-
-        case 7:
-            menuVerGrupos();
-            break;
-
-        case 8:
-            menuEscolherLider();
-            break;
-
-        case 9:
-            menuEnviarEmailsGrupoEspecifico();
-            break;
-
-        case 10:
-            menuEnviarEmailsTodosGrupos();
-            break;
-
-        case 11:
-            if (salvarLista(&listaAlunos, "data/alunos.txt") == 0 &&
-                salvarGrupos(&listaGrupos, "data/grupos.txt") == 0)
-            {
-                printf("\nTodos os dados salvos com sucesso!\n");
-                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
-            }
-            else
-            {
-                printf("\nErro ao salvar dados!\n");
-            }
-            break;
-
-        case 12:
-            if (carregarLista(&listaAlunos, "data/alunos.txt") == 0 &&
-                carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
-            {
-                printf("\nTodos os dados carregados com sucesso!\n");
-                printf("Alunos: %d | Grupos: %d\n", listaAlunos.quantidade, listaGrupos.num_grupos);
-            }
-            else
-            {
-                printf("\nErro ao carregar dados!\n");
-            }
+            printf("\n=== ELEGER DELEGADO(A) ===\n");
+            printf("Esta funcionalidade esta em desenvolvimento...\n");
             break;
 
         case 0:
@@ -376,9 +472,11 @@ int main()
             break;
         }
 
-        printf("\nPressione Enter para continuar...");
-        limparBuffer();
-        getchar();
+        if (option != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
 
     } while (option != 0);
 
