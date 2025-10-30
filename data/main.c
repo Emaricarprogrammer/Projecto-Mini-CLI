@@ -4,7 +4,7 @@
 #include "grupos.h"
 
 #define name_project "Mini CLI para gestao de turmas."
-#define grupo "10"
+#define grupo_numero "10"
 #define lider "Artur M. Paulo - 20250497"
 #define analist "Emanuel Antonio - 20250072"
 #define programmer "Alberto dos Santos- 2025####"
@@ -126,22 +126,50 @@ void menuGerarGrupos()
 
     printf("\nGrupos existentes: %d\n", listaGrupos.num_grupos);
 
+    // Salvar numero de grupos antes de criar novos
+    int grupos_antes = listaGrupos.num_grupos;
+
     int resultado = gerarGruposAutomaticos(&listaGrupos, &listaAlunos, elementos_por_grupo, disciplina, tema);
 
     if (resultado > 0)
     {
         printf("\n%d novos grupos criados com sucesso!\n", resultado);
         printf("Total de grupos agora: %d\n", listaGrupos.num_grupos);
-        exibirGrupos(&listaGrupos);
 
-        // Perguntar se quer enviar emails
-        printf("\nDeseja enviar emails de notificacao para os alunos? (s/n): ");
+        // Mostrar apenas os novos grupos criados
+        printf("\n=== NOVOS GRUPOS CRIADOS ===\n");
+        for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
+        {
+            const Grupo *grupo_atual = &listaGrupos.grupos[i];
+
+            printf("\n--- GRUPO %d ---\n", grupo_atual->numero_grupo);
+            printf("Disciplina: %s\n", grupo_atual->disciplina);
+            printf("Tema do Projeto: %s\n", grupo_atual->tema);
+            printf("Elementos (%d):\n", grupo_atual->num_elementos);
+
+            for (int j = 0; j < grupo_atual->num_elementos; j++)
+            {
+                printf("  %d. %s (%s)\n",
+                       j + 1,
+                       grupo_atual->elementos[j].nome,
+                       grupo_atual->elementos[j].numero_estudante);
+            }
+            printf("-------------------\n");
+        }
+
+        // Perguntar se quer enviar emails apenas para os novos grupos
+        printf("\nDeseja enviar emails de notificacao para os NOVOS grupos? (s/n): ");
         limparBuffer();
         char resposta = getchar();
 
         if (resposta == 's' || resposta == 'S')
         {
-            enviarEmailGrupos(&listaGrupos);
+            // Enviar emails apenas para os novos grupos
+            for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
+            {
+                int numero_grupo = listaGrupos.grupos[i].numero_grupo;
+                enviarEmailGrupoEspecifico(&listaGrupos, numero_grupo);
+            }
         }
 
         // Salvar grupos automaticamente
@@ -167,9 +195,50 @@ void menuVerGrupos()
     exibirGrupos(&listaGrupos);
 }
 
-void menuEnviarEmails()
+void menuEscolherLider()
 {
-    printf("\n=== ENVIAR EMAILS PARA GRUPOS ===\n");
+    printf("\n=== ESCOLHER LIDER PARA GRUPO ===\n");
+
+    if (listaGrupos.num_grupos == 0)
+    {
+        printf("Nenhum grupo criado.\n");
+        return;
+    }
+
+    exibirGrupos(&listaGrupos);
+
+    int numero_grupo;
+    printf("\nDigite o numero do grupo para escolher lider: ");
+    scanf("%d", &numero_grupo);
+
+    escolherLiderGrupo(&listaGrupos, numero_grupo);
+
+    // Salvar apos escolher lider
+    salvarGrupos(&listaGrupos, "data/grupos.txt");
+}
+
+void menuEnviarEmailsGrupoEspecifico()
+{
+    printf("\n=== ENVIAR EMAILS PARA GRUPO ESPECIFICO ===\n");
+
+    if (listaGrupos.num_grupos == 0)
+    {
+        printf("Nenhum grupo criado.\n");
+        return;
+    }
+
+    exibirGrupos(&listaGrupos);
+
+    int numero_grupo;
+    printf("\nDigite o numero do grupo para enviar emails: ");
+    scanf("%d", &numero_grupo);
+
+    enviarEmailGrupoEspecifico(&listaGrupos, numero_grupo);
+}
+
+void menuEnviarEmailsTodosGrupos()
+{
+    printf("\n=== ENVIAR EMAILS PARA TODOS OS GRUPOS ===\n");
     enviarEmailGrupos(&listaGrupos);
 }
 
@@ -184,9 +253,11 @@ void menuPrincipal()
     printf("5-Ver alunos cadastrados\n");
     printf("6-Remover aluno\n");
     printf("7-Ver grupos criados\n");
-    printf("8-Enviar emails para grupos\n");
-    printf("9-Salvar dados\n");
-    printf("10-Carregar dados\n");
+    printf("8-Escolher lider para grupo\n");
+    printf("9-Enviar emails para grupo especifico\n");
+    printf("10-Enviar emails para todos os grupos\n");
+    printf("11-Salvar dados\n");
+    printf("12-Carregar dados\n");
     printf("0-Sair");
     printf("\n********************************************\n");
     printf("Opcao: ");
@@ -213,7 +284,7 @@ int main()
 
     printf("==========================================\n");
     printf("%s\n", name_project);
-    printf("Grupo n: %s\n", grupo);
+    printf("Grupo n: %s\n", grupo_numero);
     printf("Integrantes:\n");
     printf("Lider: %s\n", lider);
     printf("Analista: %s\n", analist);
@@ -256,10 +327,18 @@ int main()
             break;
 
         case 8:
-            menuEnviarEmails();
+            menuEscolherLider();
             break;
 
         case 9:
+            menuEnviarEmailsGrupoEspecifico();
+            break;
+
+        case 10:
+            menuEnviarEmailsTodosGrupos();
+            break;
+
+        case 11:
             if (salvarLista(&listaAlunos, "data/alunos.txt") == 0 &&
                 salvarGrupos(&listaGrupos, "data/grupos.txt") == 0)
             {
@@ -272,7 +351,7 @@ int main()
             }
             break;
 
-        case 10:
+        case 12:
             if (carregarLista(&listaAlunos, "data/alunos.txt") == 0 &&
                 carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
             {

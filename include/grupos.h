@@ -15,6 +15,7 @@ typedef struct
     char tema[MAX_TEMA];
     Aluno elementos[MAX_ELEMENTOS_POR_GRUPO];
     int num_elementos;
+    int indice_lider; // Indice do lider no array de elementos
 } Grupo;
 
 typedef struct
@@ -31,5 +32,7 @@ int salvarGrupos(const ListaGrupos *lista, const char *filename);
 int carregarGrupos(ListaGrupos *lista, const char *filename);
 int enviarEmailReal(const char *para, const char *assunto, const char *mensagem);
 void enviarEmailGrupos(const ListaGrupos *lista);
+void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int numero_grupo);
+void escolherLiderGrupo(ListaGrupos *lista, int numero_grupo);
 
 #endif

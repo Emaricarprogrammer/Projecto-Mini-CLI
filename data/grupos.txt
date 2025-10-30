@@ -1,36 +1,15 @@
-Grupo:1;Disciplina:MIC;Tema:MIC
-Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
-Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
-FIM_GRUPO
-Grupo:2;Disciplina:MIC;Tema:MIC
-Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
-Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
-FIM_GRUPO
-Grupo:3;Disciplina:Logica Matematica;Tema:Proposicoes
-Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
-Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
-FIM_GRUPO
-Grupo:4;Disciplina:Logica Matematica;Tema:Proposicoes
-Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
-Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
-FIM_GRUPO
-Grupo:5;Disciplina:Ingles;Tema:IA
-Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
-Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
-FIM_GRUPO
-Grupo:6;Disciplina:Ingles;Tema:IA
-Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
-Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
-FIM_GRUPO
-Grupo:7;Disciplina:Analise Matematica;Tema:Analise
+Grupo:1;Disciplina:Programa‡ao I;Tema:Projeto Individual;Lider:0
 Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
 FIM_GRUPO
-Grupo:8;Disciplina:Analise Matematica;Tema:Analise
-Aluno:Nsima Suami;20250000;nsimba@gmail.com;937937837
+Grupo:2;Disciplina:Programa‡ao I;Tema:Projeto Individual;Lider:0
+Aluno:Cristiano Mucana;20250046;cristianomucana@icloud.com;937132447
 FIM_GRUPO
-Grupo:9;Disciplina:Analise Matematica;Tema:Analise
-Aluno:Alberto dos Santos;2025####;alberto@gmail.com;972348441
+Grupo:3;Disciplina:Programa‡ao I;Tema:Projeto Individual;Lider:0
+Aluno:Marneza Henriques;20251099;marnezahenriques13@gmail.com;925630742
 FIM_GRUPO
-Grupo:10;Disciplina:Analise Matematica;Tema:Analise
-Aluno:Emanuel Antonio;20250072;emanuelantonio@gmail.com;944395940
+Grupo:4;Disciplina:Programa‡ao I;Tema:Projeto Individual;Lider:0
+Aluno:Emanuel Antonio;20250072;emaricaroffice@gmail.com;944395940
+FIM_GRUPO
+Grupo:5;Disciplina:Programa‡ao I;Tema:Projeto Individual;Lider:0
+Aluno:Alberto dos Santos;2025####;albertozongodossantos@gmail.com;972348441
 FIM_GRUPO
