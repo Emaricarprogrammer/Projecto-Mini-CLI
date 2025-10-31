@@ -10,25 +10,25 @@
 
 typedef struct
 {
-    int id_grupo;
-    int numero_grupo;
+    int id_grupo;     // ID unico do grupo (nao se repete)
+    int numero_grupo; // Numero do grupo (pode repetir em diferentes disciplinas)
     char disciplina[MAX_DISCIPLINA];
     char tema[MAX_TEMA];
     Aluno elementos[MAX_ELEMENTOS_POR_GRUPO];
     int num_elementos;
-    int indice_lider;
+    int indice_lider; // Indice do lider no array de elementos
 } Grupo;
 
 typedef struct
 {
     Grupo grupos[MAX_GRUPOS];
     int num_grupos;
-    int proximo_id;
+    int proximo_id; // Proximo ID unico a ser atribuido
 } ListaGrupos;
 
 // Funcoes para manipulacao de grupos
 void inicializarListaGrupos(ListaGrupos *lista);
-int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int elementos_por_grupo, const char *disciplina, const char *tema);
+int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int elementos_por_grupo, const char *disciplina);
 void exibirGrupos(const ListaGrupos *lista);
 int salvarGrupos(const ListaGrupos *lista, const char *filename);
 int carregarGrupos(ListaGrupos *lista, const char *filename);

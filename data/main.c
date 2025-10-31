@@ -2,6 +2,7 @@
 #include <string.h>
 #include "alunos.h"
 #include "grupos.h"
+#include "conteudo.h"
 
 #define name_project "Mini CLI para gestao de turmas."
 #define grupo_numero "10"
@@ -12,6 +13,7 @@
 // Variaveis globais
 ListaAlunos listaAlunos;
 ListaGrupos listaGrupos;
+ListaConteudos listaConteudos;
 
 void menuAdicionarAluno()
 {
@@ -109,17 +111,12 @@ void menuGerarGrupos()
     }
 
     char disciplina[MAX_DISCIPLINA];
-    char tema[MAX_TEMA];
     int elementos_por_grupo;
 
     printf("Disciplina: ");
     limparBuffer();
     fgets(disciplina, MAX_DISCIPLINA, stdin);
     disciplina[strcspn(disciplina, "\n")] = 0;
-
-    printf("Tema do projeto: ");
-    fgets(tema, MAX_TEMA, stdin);
-    tema[strcspn(tema, "\n")] = 0;
 
     printf("Numero de elementos por grupo: ");
     scanf("%d", &elementos_por_grupo);
@@ -129,7 +126,7 @@ void menuGerarGrupos()
     // Salvar numero de grupos antes de criar novos
     int grupos_antes = listaGrupos.num_grupos;
 
-    int resultado = gerarGruposAutomaticos(&listaGrupos, &listaAlunos, elementos_por_grupo, disciplina, tema);
+    int resultado = gerarGruposAutomaticos(&listaGrupos, &listaAlunos, elementos_por_grupo, disciplina);
 
     if (resultado > 0)
     {
@@ -142,7 +139,7 @@ void menuGerarGrupos()
         {
             const Grupo *grupo_atual = &listaGrupos.grupos[i];
 
-            printf("\n--- GRUPO %d ---\n", grupo_atual->numero_grupo);
+            printf("\n--- GRUPO %d (ID: %d) ---\n", grupo_atual->numero_grupo, grupo_atual->id_grupo);
             printf("Disciplina: %s\n", grupo_atual->disciplina);
             printf("Tema do Projeto: %s\n", grupo_atual->tema);
             printf("Elementos (%d):\n", grupo_atual->num_elementos);
@@ -157,19 +154,12 @@ void menuGerarGrupos()
             printf("-------------------\n");
         }
 
-        // Perguntar se quer enviar emails apenas para os novos grupos
-        printf("\nDeseja enviar emails de notificacao para os NOVOS grupos? (s/n): ");
-        limparBuffer();
-        char resposta = getchar();
-
-        if (resposta == 's' || resposta == 'S')
+        // ENVIAR EMAILS AUTOMATICAMENTE para os novos grupos
+        printf("\n=== ENVIANDO EMAILS AUTOMATICAMENTE ===\n");
+        for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
         {
-            // Enviar emails apenas para os novos grupos
-            for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
-            {
-                int numero_grupo = listaGrupos.grupos[i].numero_grupo;
-                enviarEmailGrupoEspecifico(&listaGrupos, numero_grupo);
-            }
+            int id_grupo = listaGrupos.grupos[i].id_grupo;
+            enviarEmailGrupoEspecifico(&listaGrupos, id_grupo);
         }
 
         // Salvar grupos automaticamente
@@ -217,29 +207,70 @@ void menuEscolherLider()
     salvarGrupos(&listaGrupos, "data/grupos.txt");
 }
 
-void menuEnviarEmailsGrupoEspecifico()
+void menuAdicionarConteudo()
 {
-    printf("\n=== ENVIAR EMAILS PARA GRUPO ESPECIFICO ===\n");
+    printf("\n=== ADICIONAR CONTEUDO ===\n");
 
-    if (listaGrupos.num_grupos == 0)
+    char caminho_local[MAX_CAMINHO];
+    char descricao[MAX_DESCRICAO];
+    int opcao_disciplina;
+
+    printf("Caminho completo do arquivo (PDF/TXT): ");
+    limparBuffer();
+    fgets(caminho_local, MAX_CAMINHO, stdin);
+    caminho_local[strcspn(caminho_local, "\n")] = 0;
+
+    printf("Descricao do conteudo: ");
+    fgets(descricao, MAX_DESCRICAO, stdin);
+    descricao[strcspn(descricao, "\n")] = 0;
+
+    menuDisciplinas();
+    scanf("%d", &opcao_disciplina);
+    limparBuffer();
+
+    const char *disciplina = obterNomeDisciplina(opcao_disciplina);
+
+    if (adicionarConteudo(&listaConteudos, caminho_local, descricao, disciplina) == 0)
     {
-        printf("Nenhum grupo criado.\n");
+        printf("Conteudo preparado para upload!\n");
+    }
+}
+
+void menuFazerPushGitHub()
+{
+    printf("\n=== FAZER PUSH PARA GITHUB ===\n");
+
+    if (listaConteudos.num_conteudos == 0)
+    {
+        printf("Nenhum conteudo adicionado para fazer push.\n");
         return;
     }
 
-    exibirGrupos(&listaGrupos);
+    exibirConteudos(&listaConteudos);
 
-    int id_grupo;
-    printf("\nDigite o ID do grupo para enviar emails: ");
-    scanf("%d", &id_grupo);
+    char mensagem_commit[200];
+    printf("\nMensagem do commit (ou Enter para mensagem padrao): ");
+    limparBuffer();
+    fgets(mensagem_commit, sizeof(mensagem_commit), stdin);
+    mensagem_commit[strcspn(mensagem_commit, "\n")] = 0;
 
-    enviarEmailGrupoEspecifico(&listaGrupos, id_grupo);
+    printf("\nConfirmar push para GitHub? (s/n): ");
+    char confirmacao = getchar();
+
+    if (confirmacao == 's' || confirmacao == 'S')
+    {
+        fazerPushGitHub(&listaConteudos, mensagem_commit);
+    }
+    else
+    {
+        printf("Push cancelado.\n");
+    }
 }
 
-void menuEnviarEmailsTodosGrupos()
+void menuVerConteudos()
 {
-    printf("\n=== ENVIAR EMAILS PARA TODOS OS GRUPOS ===\n");
-    enviarEmailGrupos(&listaGrupos);
+    printf("\n=== CONTEUDOS ADICIONADOS ===\n");
+    exibirConteudos(&listaConteudos);
 }
 
 void subMenuAlunos()
@@ -292,8 +323,6 @@ void subMenuGrupos()
         printf("1. Gerar grupos aleatorios\n");
         printf("2. Ver grupos criados\n");
         printf("3. Escolher lider para grupo\n");
-        printf("4. Enviar emails para grupo especifico\n");
-        printf("5. Enviar emails para todos os grupos\n");
         printf("0. Voltar ao menu principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -310,11 +339,46 @@ void subMenuGrupos()
         case 3:
             menuEscolherLider();
             break;
-        case 4:
-            menuEnviarEmailsGrupoEspecifico();
+        case 0:
+            printf("Voltando ao menu principal...\n");
             break;
-        case 5:
-            menuEnviarEmailsTodosGrupos();
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+    } while (opcao != 0);
+}
+
+void subMenuConteudos()
+{
+    int opcao;
+    do
+    {
+        printf("\n=== GESTAO DE CONTEUDOS ===\n");
+        printf("1. Adicionar conteudo\n");
+        printf("2. Ver conteudos adicionados\n");
+        printf("3. Fazer push para GitHub\n");
+        printf("0. Voltar ao menu principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+            menuAdicionarConteudo();
+            break;
+        case 2:
+            menuVerConteudos();
+            break;
+        case 3:
+            menuFazerPushGitHub();
             break;
         case 0:
             printf("Voltando ao menu principal...\n");
@@ -394,9 +458,10 @@ void menuPrincipal()
     printf("============================================\n");
     printf("1. Gestao de Alunos\n");
     printf("2. Gestao de Grupos\n");
-    printf("3. Gestao de Dados\n");
-    printf("4. Download de conteudos\n");
-    printf("5. Eleger delegado(a)\n");
+    printf("3. Gestao de Conteudos\n");
+    printf("4. Gestao de Dados\n");
+    printf("5. Download de conteudos\n");
+    printf("6. Eleger delegado(a)\n");
     printf("0. Sair\n");
     printf("============================================\n");
     printf("Opcao: ");
@@ -409,6 +474,7 @@ int main()
     // Inicializar as listas
     inicializarLista(&listaAlunos);
     inicializarListaGrupos(&listaGrupos);
+    inicializarListaConteudos(&listaConteudos);
 
     // Tentar carregar dados automaticamente
     if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
@@ -433,7 +499,12 @@ int main()
     do
     {
         menuPrincipal();
-        scanf("%d", &option);
+        if (scanf("%d", &option) != 1)
+        {
+            printf("Entrada invalida! Digite um numero.\n");
+            limparBuffer();
+            continue;
+        }
         limparBuffer();
 
         switch (option)
@@ -447,15 +518,19 @@ int main()
             break;
 
         case 3:
-            subMenuDados();
+            subMenuConteudos();
             break;
 
         case 4:
+            subMenuDados();
+            break;
+
+        case 5:
             printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
             printf("Esta funcionalidade esta em desenvolvimento...\n");
             break;
 
-        case 5:
+        case 6:
             printf("\n=== ELEGER DELEGADO(A) ===\n");
             printf("Esta funcionalidade esta em desenvolvimento...\n");
             break;
@@ -484,6 +559,6 @@ int main()
 }
 
 /*
-gcc data\main.c src\alunos.c src\grupos.c -Iinclude -o programa.exe
-programa.exe
+gcc data\main.c src\alunos.c src\grupos.c src\conteudo.c -Iinclude -o sistema.exe
+sistema.exe
 */

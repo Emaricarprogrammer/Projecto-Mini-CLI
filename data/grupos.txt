@@ -1,27 +1,4 @@
-PROXIMO_ID:9
-Grupo:ID:1;Numero:1;Disciplina:;Tema:Projeto Individual;Lider:0
-Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
-FIM_GRUPO
-Grupo:ID:2;Numero:2;Disciplina:;Tema:Projeto Individual;Lider:0
-Aluno:Emanuel Antonio;20250072;emaricaroffice@gmail.com;944395940
-FIM_GRUPO
-Grupo:ID:3;Numero:3;Disciplina:;Tema:Projeto Individual;Lider:0
-Aluno:Alberto dos Santos;2025####;albertozongodossantos@gmail.com;972348441
-FIM_GRUPO
-Grupo:ID:4;Numero:4;Disciplina:;Tema:Projeto Individual;Lider:0
-Aluno:Cristiano Mucana;20250046;cristianomucana@icloud.com;937132447
-FIM_GRUPO
-Grupo:ID:5;Numero:5;Disciplina:;Tema:Projeto Individual;Lider:0
-Aluno:Marneza Henriques;20251099;marnezahenriques13@gmail.com;925630742
-FIM_GRUPO
-Grupo:ID:6;Numero:1;Disciplina:;Tema:Sucessoes;Lider:0
-Aluno:Emanuel Antonio;20250072;emaricaroffice@gmail.com;944395940
-Aluno:Cristiano Mucana;20250046;cristianomucana@icloud.com;937132447
-FIM_GRUPO
-Grupo:ID:7;Numero:2;Disciplina:;Tema:Sucessoes;Lider:0
-Aluno:Artur M Paulo;20250497;arturpaulo929@gmail.com;929277043
-Aluno:Alberto dos Santos;2025####;albertozongodossantos@gmail.com;972348441
-FIM_GRUPO
-Grupo:ID:8;Numero:3;Disciplina:;Tema:Sucessoes;Lider:0
-Aluno:Marneza Henriques;20251099;marnezahenriques13@gmail.com;925630742
+PROXIMO_ID:2
+Grupo:ID:1;Numero:1;Disciplina:PT;Tema:PT;Lider:0
+Aluno:Artur Macumba Paulo;20250497;arturpaulo929@gmail.com;929277043
 FIM_GRUPO

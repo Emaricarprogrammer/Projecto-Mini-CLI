@@ -10,7 +10,7 @@ void inicializarListaGrupos(ListaGrupos *lista)
     lista->proximo_id = 1; // Comecar IDs a partir de 1
 }
 
-int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int elementos_por_grupo, const char *disciplina, const char *tema)
+int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int elementos_por_grupo, const char *disciplina)
 {
     if (alunos->quantidade == 0)
     {
@@ -48,6 +48,25 @@ int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int el
         alunos_embaralhados[j] = temp;
     }
 
+    // Perguntar se quer tema unico ou temas diferentes
+    printf("\n=== DEFINICAO DE TEMAS ===\n");
+    printf("1. Definir um tema unico para todos os grupos\n");
+    printf("2. Definir temas diferentes para cada grupo\n");
+    printf("Escolha uma opcao: ");
+
+    int opcao_tema;
+    scanf("%d", &opcao_tema);
+    limparBuffer();
+
+    char tema_unico[MAX_TEMA] = "";
+
+    if (opcao_tema == 1)
+    {
+        printf("Digite o tema unico para todos os grupos: ");
+        fgets(tema_unico, MAX_TEMA, stdin);
+        tema_unico[strcspn(tema_unico, "\n")] = 0;
+    }
+
     // Distribuir alunos pelos novos grupos
     int aluno_index = 0;
 
@@ -62,9 +81,23 @@ int gerarGruposAutomaticos(ListaGrupos *lista, const ListaAlunos *alunos, int el
         strncpy(grupo->disciplina, disciplina, MAX_DISCIPLINA - 1);
         grupo->disciplina[MAX_DISCIPLINA - 1] = '\0';
 
-        // Usar o tema fornecido como parametro para todos os grupos
-        strncpy(grupo->tema, tema, MAX_TEMA - 1);
-        grupo->tema[MAX_TEMA - 1] = '\0';
+        // Definir tema do grupo
+        if (opcao_tema == 1)
+        {
+            // Usar tema unico para todos os grupos
+            strncpy(grupo->tema, tema_unico, MAX_TEMA - 1);
+            grupo->tema[MAX_TEMA - 1] = '\0';
+        }
+        else
+        {
+            // Pedir tema individual para cada grupo
+            printf("\nDigite o tema para o Grupo %d: ", grupo->numero_grupo);
+            char tema_grupo[MAX_TEMA];
+            fgets(tema_grupo, MAX_TEMA, stdin);
+            tema_grupo[strcspn(tema_grupo, "\n")] = 0;
+            strncpy(grupo->tema, tema_grupo, MAX_TEMA - 1);
+            grupo->tema[MAX_TEMA - 1] = '\0';
+        }
 
         grupo->num_elementos = 0;
 
@@ -425,6 +458,7 @@ void enviarEmailGrupoEspecifico(const ListaGrupos *lista, int id_grupo)
                  "Colegas do seu grupo:\n",
                  aluno->nome, grupo_alvo->numero_grupo, grupo_alvo->id_grupo, grupo_alvo->disciplina, grupo_alvo->tema);
 
+        // Adicionar apenas nomes dos colegas
         for (int k = 0; k < grupo_alvo->num_elementos; k++)
         {
             char colega_info[100];
