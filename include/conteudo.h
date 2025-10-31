@@ -32,8 +32,5 @@ int executarComandoGit(const char *comando);
 void limparBufferConteudo();
 void menuDisciplinas();
 const char *obterNomeDisciplina(int opcao);
-void menuDownloadConteudos(const ListaConteudos *lista);
-int baixarConteudo(const char *disciplina, const char *nome_arquivo, const char *pasta_destino);
-char *obterPastaDocumentos();
 
 #endif
