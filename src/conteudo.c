@@ -80,12 +80,12 @@ int copiarArquivoParaRepositorio(const char *caminho_origem, const char *nome_ar
 
     if (resultado == 0)
     {
-        printf("✅ Arquivo copiado com sucesso para: %s\\%s\n", disciplina, nome_arquivo);
+        printf("Arquivo copiado com sucesso para: %s\\%s\n", disciplina, nome_arquivo);
         return 0;
     }
     else
     {
-        printf("❌ Erro ao copiar arquivo com COPY. Tentando XCOPY...\n");
+        printf("Erro ao copiar arquivo com COPY. Tentando XCOPY...\n");
 
         // Método 2: Tentar com XCOPY (mais robusto)
         snprintf(comando_copia, sizeof(comando_copia), "xcopy \"%s\" \"%s\\\" /Y /I", caminho_origem, pasta_disciplina);
@@ -93,13 +93,13 @@ int copiarArquivoParaRepositorio(const char *caminho_origem, const char *nome_ar
 
         if (resultado == 0)
         {
-            printf("✅ Arquivo copiado com XCOPY para: %s\\%s\n", disciplina, nome_arquivo);
+            printf("Arquivo copiado com XCOPY para: %s\\%s\n", disciplina, nome_arquivo);
             return 0;
         }
         else
         {
-            printf("❌ Erro grave: Nao foi possivel copiar o arquivo: %s\n", nome_arquivo);
-            printf("💡 Dica: Copie manualmente o arquivo para: %s\\%s\n", pasta_disciplina, nome_arquivo);
+            printf("Erro grave: Nao foi possivel copiar o arquivo: %s\n", nome_arquivo);
+            printf("Dica: Copie manualmente o arquivo para: %s\\%s\n", pasta_disciplina, nome_arquivo);
             return -1;
         }
     }
@@ -134,7 +134,7 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
     FILE *arquivo = fopen(caminho_local, "rb");
     if (arquivo == NULL)
     {
-        printf("❌ Erro: Arquivo nao encontrado ou inacessivel: %s\n", caminho_local);
+        printf("Erro: Arquivo nao encontrado ou inacessivel: %s\n", caminho_local);
         printf("Possiveis causas:\n");
         printf("- Unidade A: nao existe ou nao esta conectada\n");
         printf("- Caminho incorreto\n");
@@ -159,22 +159,22 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
         nome_arquivo = caminho_local;
     }
 
-    printf("📁 Arquivo detectado: %s\n", nome_arquivo);
+    printf("Arquivo detectado: %s\n", nome_arquivo);
 
     // Verificar se e PDF
     const char *extensao = strrchr(nome_arquivo, '.');
     if (extensao == NULL || (strcasecmp(extensao, ".pdf") != 0 && strcasecmp(extensao, ".txt") != 0))
     {
-        printf("⚠️  Aviso: O arquivo nao e PDF ou TXT. Continuando mesmo assim...\n");
+        printf("Aviso: O arquivo nao e PDF ou TXT. Continuando mesmo assim...\n");
     }
 
     Conteudo *novo_conteudo = &lista->conteudos[lista->num_conteudos];
 
     // Tentar copiar arquivo para o repositorio local na pasta da disciplina
-    printf("📤 Copiando arquivo para o repositorio...\n");
+    printf("Copiando arquivo para o repositorio...\n");
     if (copiarArquivoParaRepositorio(caminho_local, nome_arquivo, disciplina) != 0)
     {
-        printf("❌ Falha ao copiar arquivo. Tentando metodo alternativo...\n");
+        printf("Falha ao copiar arquivo. Tentando metodo alternativo...\n");
 
         // Método alternativo: criar arquivo vazio e tentar novamente
         char caminho_destino[MAX_CAMINHO];
@@ -210,8 +210,8 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
              "%04d-%02d-%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 
     lista->num_conteudos++;
-    printf("✅ Conteudo adicionado com sucesso!\n");
-    printf("📍 Localizacao: data\\conteudos\\%s\\%s\n", disciplina, nome_arquivo);
+    printf("Conteudo adicionado com sucesso!\n");
+    printf("Localizacao: data\\conteudos\\%s\\%s\n", disciplina, nome_arquivo);
     return 0;
 }
 
@@ -325,16 +325,16 @@ int fazerPushGitHub(const ListaConteudos *lista, const char *mensagem_commit)
         // Se falhar, tentar com --force (cuidado: sobrescreve o remote)
         if (executarComandoGit("git push -u origin arturDev929 --force") != 0)
         {
-            printf("❌ Erro ao fazer push para o GitHub\n");
-            printf("Verifique suas credenciais Git e permissões\n");
+            printf("Erro ao fazer push para o GitHub\n");
+            printf("Verifique suas credenciais Git e permissoes\n");
             return -1;
         }
     }
 
-    printf("\n✅ Push realizado com sucesso para o GitHub!\n");
-    printf("🌿 Branch: arturDev929\n");
-    printf("📦 Repositorio: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI.git\n");
-    printf("🔗 URL direta: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI/tree/arturDev929\n");
+    printf("\nPush realizado com sucesso para o GitHub!\n");
+    printf("Branch: arturDev929\n");
+    printf("Repositorio: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI.git\n");
+    printf("URL direta: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI/tree/arturDev929\n");
 
     return 0;
 }
