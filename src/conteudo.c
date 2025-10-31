@@ -69,10 +69,10 @@ int copiarArquivoParaRepositorio(const char *caminho_origem, const char *nome_ar
     snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_disciplina);
     system(comando_mkdir);
 
-    // Tentar copiar usando diferentes métodos
-    printf("🔄 Tentando copiar: %s\n", caminho_origem);
+    // Tentar copiar usando diferentes metodos
+    printf("Tentando copiar: %s\n", caminho_origem);
 
-    // Método 1: comando COPY normal
+    // Metodo 1: comando COPY normal
     snprintf(comando_copia, sizeof(comando_copia), "copy \"%s\" \"%s\\%s\"", caminho_origem, pasta_disciplina, nome_arquivo);
     printf("Comando: %s\n", comando_copia);
 
@@ -87,7 +87,7 @@ int copiarArquivoParaRepositorio(const char *caminho_origem, const char *nome_ar
     {
         printf("Erro ao copiar arquivo com COPY. Tentando XCOPY...\n");
 
-        // Método 2: Tentar com XCOPY (mais robusto)
+        // Metodo 2: Tentar com XCOPY (mais robusto)
         snprintf(comando_copia, sizeof(comando_copia), "xcopy \"%s\" \"%s\\\" /Y /I", caminho_origem, pasta_disciplina);
         resultado = system(comando_copia);
 
@@ -130,7 +130,7 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
         return -1;
     }
 
-    // Verificar se o arquivo existe - modo binário para melhor compatibilidade
+    // Verificar se o arquivo existe - modo binario para melhor compatibilidade
     FILE *arquivo = fopen(caminho_local, "rb");
     if (arquivo == NULL)
     {
@@ -176,7 +176,7 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
     {
         printf("Falha ao copiar arquivo. Tentando metodo alternativo...\n");
 
-        // Método alternativo: criar arquivo vazio e tentar novamente
+        // Metodo alternativo: criar arquivo vazio e tentar novamente
         char caminho_destino[MAX_CAMINHO];
         snprintf(caminho_destino, sizeof(caminho_destino), "data\\conteudos\\%s\\%s", disciplina, nome_arquivo);
 
@@ -184,7 +184,7 @@ int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const ch
         if (dest != NULL)
         {
             fclose(dest);
-            printf("✅ Estrutura criada. Agora copie manualmente o arquivo.\n");
+            printf("Estrutura criada. Agora copie manualmente o arquivo.\n");
         }
 
         return -3;
@@ -238,8 +238,8 @@ void exibirConteudos(const ListaConteudos *lista)
 int fazerPushGitHub(const ListaConteudos *lista, const char *mensagem_commit)
 {
     printf("\n=== FAZENDO PUSH PARA O GITHUB ===\n");
-    printf("🌿 Branch de destino: arturDev929\n");
-    printf("📦 Repositorio: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI.git\n");
+    printf("Branch de destino: arturDev929\n");
+    printf("Repositorio: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI.git\n");
 
     // Verificar se e um repositorio git
     if (executarComandoGit("git status") != 0)
@@ -337,4 +337,214 @@ int fazerPushGitHub(const ListaConteudos *lista, const char *mensagem_commit)
     printf("URL direta: https://github.com/Emaricarprogrammer/Projecto-Mini-CLI/tree/arturDev929\n");
 
     return 0;
+}
+
+// Funcao para obter a pasta Documentos do usuario
+char *obterPastaDocumentos()
+{
+    static char documentos[MAX_CAMINHO];
+
+    // Tentar obter via variavel de ambiente USERPROFILE
+    char *userprofile = getenv("USERPROFILE");
+    if (userprofile != NULL)
+    {
+        snprintf(documentos, sizeof(documentos), "%s\\Documents", userprofile);
+        return documentos;
+    }
+
+    // Fallback para caminho padrao
+    strcpy(documentos, "C:\\Users\\Usuario\\Documents");
+    return documentos;
+}
+
+// Funcao para baixar um conteudo especifico
+int baixarConteudo(const char *disciplina, const char *nome_arquivo, const char *pasta_destino)
+{
+    char caminho_origem[MAX_CAMINHO];
+    char comando_copia[MAX_CAMINHO * 2];
+
+    // Construir caminho de origem
+    snprintf(caminho_origem, sizeof(caminho_origem), "data\\conteudos\\%s\\%s", disciplina, nome_arquivo);
+
+    printf("Origem: %s\n", caminho_origem);
+    printf("Destino: %s\n", pasta_destino);
+
+    // Verificar se arquivo de origem existe
+    FILE *arquivo = fopen(caminho_origem, "rb");
+    if (arquivo == NULL)
+    {
+        printf("Erro: Arquivo nao encontrado: %s\n", caminho_origem);
+        return -1;
+    }
+    fclose(arquivo);
+
+    // Criar pasta de destino se nao existir
+    char comando_mkdir[MAX_CAMINHO];
+    snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_destino);
+    system(comando_mkdir);
+
+    // Copiar arquivo
+    snprintf(comando_copia, sizeof(comando_copia), "copy \"%s\" \"%s\\%s\"", caminho_origem, pasta_destino, nome_arquivo);
+
+    printf("Executando: %s\n", comando_copia);
+    int resultado = system(comando_copia);
+
+    if (resultado == 0)
+    {
+        printf("Download concluido: %s\\%s\n", pasta_destino, nome_arquivo);
+        return 0;
+    }
+    else
+    {
+        printf("Erro no download do arquivo: %s\n", nome_arquivo);
+        return -1;
+    }
+}
+
+// Menu para download de conteudos
+void menuDownloadConteudos(const ListaConteudos *lista)
+{
+    printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
+
+    if (lista->num_conteudos == 0)
+    {
+        printf("Nenhum conteudo disponivel para download.\n");
+        return;
+    }
+
+    // Obter pasta Documentos
+    char *pasta_documentos = obterPastaDocumentos();
+    char pasta_destino[MAX_CAMINHO];
+    snprintf(pasta_destino, sizeof(pasta_destino), "%s\\ConteudosEscolares", pasta_documentos);
+
+    printf("Pasta de destino: %s\n", pasta_destino);
+
+    int opcao;
+    do
+    {
+        printf("\n--- CONTEUDOS DISPONIVEIS ---\n");
+        exibirConteudos(lista);
+
+        printf("\nOpcoes de Download:\n");
+        printf("1. Baixar conteudo especifico\n");
+        printf("2. Baixar todos os conteudos\n");
+        printf("3. Baixar por disciplina\n");
+        printf("0. Voltar ao menu anterior\n");
+        printf("Escolha uma opcao: ");
+
+        scanf("%d", &opcao);
+        limparBufferConteudo();
+
+        switch (opcao)
+        {
+        case 1:
+        {
+            // Baixar conteudo especifico
+            int indice;
+            printf("Digite o numero do conteudo para baixar: ");
+            scanf("%d", &indice);
+            limparBufferConteudo();
+
+            if (indice >= 1 && indice <= lista->num_conteudos)
+            {
+                const Conteudo *cont = &lista->conteudos[indice - 1];
+                printf("Baixando: %s - %s\n", cont->disciplina, cont->nome_arquivo);
+
+                if (baixarConteudo(cont->disciplina, cont->nome_arquivo, pasta_destino) == 0)
+                {
+                    printf("Download realizado com sucesso!\n");
+                }
+            }
+            else
+            {
+                printf("Numero de conteudo invalido!\n");
+            }
+            break;
+        }
+
+        case 2:
+        {
+            // Baixar todos os conteudos
+            printf("Iniciando download de todos os conteudos...\n");
+            int sucessos = 0;
+
+            for (int i = 0; i < lista->num_conteudos; i++)
+            {
+                const Conteudo *cont = &lista->conteudos[i];
+                printf("Baixando %d/%d: %s... ", i + 1, lista->num_conteudos, cont->nome_arquivo);
+
+                if (baixarConteudo(cont->disciplina, cont->nome_arquivo, pasta_destino) == 0)
+                {
+                    sucessos++;
+                    printf("OK\n");
+                }
+                else
+                {
+                    printf("FALHA\n");
+                }
+            }
+
+            printf("Download concluido: %d/%d arquivos baixados com sucesso.\n", sucessos, lista->num_conteudos);
+            break;
+        }
+
+        case 3:
+        {
+            // Baixar por disciplina
+            char disciplina[MAX_DISCIPLINA];
+            printf("Digite o nome da disciplina: ");
+            fgets(disciplina, MAX_DISCIPLINA, stdin);
+            disciplina[strcspn(disciplina, "\n")] = 0;
+
+            printf("Buscando conteudos da disciplina: %s\n", disciplina);
+            int encontrados = 0;
+            int sucessos = 0;
+
+            for (int i = 0; i < lista->num_conteudos; i++)
+            {
+                const Conteudo *cont = &lista->conteudos[i];
+                if (strcmp(cont->disciplina, disciplina) == 0)
+                {
+                    encontrados++;
+                    printf("Baixando: %s... ", cont->nome_arquivo);
+
+                    if (baixarConteudo(cont->disciplina, cont->nome_arquivo, pasta_destino) == 0)
+                    {
+                        sucessos++;
+                        printf("OK\n");
+                    }
+                    else
+                    {
+                        printf("FALHA\n");
+                    }
+                }
+            }
+
+            if (encontrados == 0)
+            {
+                printf("Nenhum conteudo encontrado para a disciplina: %s\n", disciplina);
+            }
+            else
+            {
+                printf("Download concluido: %d/%d arquivos baixados com sucesso.\n", sucessos, encontrados);
+            }
+            break;
+        }
+
+        case 0:
+            printf("Voltando ao menu anterior...\n");
+            break;
+
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+
+    } while (opcao != 0);
 }

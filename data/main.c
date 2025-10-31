@@ -15,6 +15,39 @@ ListaAlunos listaAlunos;
 ListaGrupos listaGrupos;
 ListaConteudos listaConteudos;
 
+void testarCaminhoEspecifico()
+{
+    printf("\n=== TESTAR CAMINHO ESPECIFICO ===\n");
+
+    // Teste direto com o caminho que voce quer
+    const char *caminho_teste = "A:\\Delegada\\Lista.pdf";
+
+    printf("Testando acesso ao arquivo: %s\n", caminho_teste);
+
+    FILE *arquivo = fopen(caminho_teste, "rb");
+    if (arquivo == NULL)
+    {
+        printf("ERRO: Arquivo nao pode ser acessado!\n");
+        printf("Solucao: Copie o arquivo para C:\\temp\\ e use esse caminho.\n");
+
+        // Criar pasta temp
+        system("mkdir C:\\temp 2>nul");
+        printf("Pasta C:\\temp\\ criada. Copie o arquivo para la.\n");
+    }
+    else
+    {
+        printf("Arquivo acessivel com sucesso!\n");
+        fclose(arquivo);
+
+        // Tentar adicionar automaticamente
+        printf("Tentando adicionar automaticamente...\n");
+        if (adicionarConteudo(&listaConteudos, caminho_teste, "Lista da Delegada - Teste", "Programacao I") == 0)
+        {
+            printf("Conteudo adicionado com sucesso!\n");
+        }
+    }
+}
+
 void menuAdicionarAluno()
 {
     printf("\n=== ADICIONAR ALUNO ===\n");
@@ -215,10 +248,27 @@ void menuAdicionarConteudo()
     char descricao[MAX_DESCRICAO];
     int opcao_disciplina;
 
-    printf("Caminho completo do arquivo (PDF/TXT): ");
+    printf("Opcoes:\n");
+    printf("1. Usar caminho A:\\\\Delegada\\\\Lista.pdf\n");
+    printf("2. Digitar outro caminho\n");
+    printf("Escolha: ");
+
+    int opcao;
+    scanf("%d", &opcao);
     limparBuffer();
-    fgets(caminho_local, MAX_CAMINHO, stdin);
-    caminho_local[strcspn(caminho_local, "\n")] = 0;
+
+    if (opcao == 1)
+    {
+        // Usar o caminho especifico que voce quer
+        strcpy(caminho_local, "A:\\Delegada\\Lista.pdf");
+        printf("Usando caminho: %s\n", caminho_local);
+    }
+    else
+    {
+        printf("Caminho completo do arquivo (PDF/TXT): ");
+        fgets(caminho_local, MAX_CAMINHO, stdin);
+        caminho_local[strcspn(caminho_local, "\n")] = 0;
+    }
 
     printf("Descricao do conteudo: ");
     fgets(descricao, MAX_DESCRICAO, stdin);
@@ -230,9 +280,22 @@ void menuAdicionarConteudo()
 
     const char *disciplina = obterNomeDisciplina(opcao_disciplina);
 
-    if (adicionarConteudo(&listaConteudos, caminho_local, descricao, disciplina) == 0)
+    int resultado = adicionarConteudo(&listaConteudos, caminho_local, descricao, disciplina);
+
+    if (resultado == 0)
     {
         printf("Conteudo preparado para upload!\n");
+    }
+    else
+    {
+        printf("Erro ao adicionar conteudo (Codigo: %d)!\n", resultado);
+
+        if (resultado == -2)
+        {
+            printf("Solucao: Copie o arquivo para C:\\temp\\ e tente novamente.\n");
+            system("mkdir C:\\temp 2>nul");
+            printf("Pasta C:\\temp\\ criada. Agora copie manualmente o arquivo.\n");
+        }
     }
 }
 
@@ -364,6 +427,8 @@ void subMenuConteudos()
         printf("1. Adicionar conteudo\n");
         printf("2. Ver conteudos adicionados\n");
         printf("3. Fazer push para GitHub\n");
+        printf("4. Testar caminho A:\\\\Delegada\\\\\n");
+        printf("5. Download de conteudos\n");
         printf("0. Voltar ao menu principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -379,6 +444,12 @@ void subMenuConteudos()
             break;
         case 3:
             menuFazerPushGitHub();
+            break;
+        case 4:
+            testarCaminhoEspecifico();
+            break;
+        case 5:
+            menuDownloadConteudos(&listaConteudos);
             break;
         case 0:
             printf("Voltando ao menu principal...\n");
@@ -460,8 +531,7 @@ void menuPrincipal()
     printf("2. Gestao de Grupos\n");
     printf("3. Gestao de Conteudos\n");
     printf("4. Gestao de Dados\n");
-    printf("5. Download de conteudos\n");
-    printf("6. Eleger delegado(a)\n");
+    printf("5. Eleger delegado(a)\n");
     printf("0. Sair\n");
     printf("============================================\n");
     printf("Opcao: ");
@@ -526,11 +596,6 @@ int main()
             break;
 
         case 5:
-            printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
-            printf("Esta funcionalidade esta em desenvolvimento...\n");
-            break;
-
-        case 6:
             printf("\n=== ELEGER DELEGADO(A) ===\n");
             printf("Esta funcionalidade esta em desenvolvimento...\n");
             break;
