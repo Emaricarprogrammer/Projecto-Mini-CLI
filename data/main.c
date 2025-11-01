@@ -249,8 +249,8 @@ void menuAdicionarConteudo()
     int opcao_disciplina;
 
     printf("Opcoes:\n");
-    printf("1. Usar caminho A:\\\\Delegada\\\\Lista.pdf\n");
-    printf("2. Digitar outro caminho\n");
+    printf("1. Digitar caminho\n");
+    // printf("2. Usar caminho A:\\\\Delegada\\\\Lista.pdf\n");
     printf("Escolha: ");
 
     int opcao;
@@ -259,15 +259,16 @@ void menuAdicionarConteudo()
 
     if (opcao == 1)
     {
-        // Usar o caminho específico que você quer
-        strcpy(caminho_local, "A:\\Delegada\\Lista.pdf");
-        printf("Usando caminho: %s\n", caminho_local);
-    }
-    else
-    {
         printf("Caminho completo do arquivo (PDF/TXT): ");
         fgets(caminho_local, MAX_CAMINHO, stdin);
         caminho_local[strcspn(caminho_local, "\n")] = 0;
+    }
+    else
+    {
+        // // Usar o caminho específico que você quer
+        // strcpy(caminho_local, "A:\\Delegada\\Lista.pdf");
+        // printf("Usando caminho: %s\n", caminho_local);
+        printf("Opcao Errada!");
     }
 
     printf("Descricao do conteudo: ");
@@ -284,15 +285,15 @@ void menuAdicionarConteudo()
 
     if (resultado == 0)
     {
-        printf("✅ Conteudo preparado para upload!\n");
+        printf("Conteudo preparado para upload!\n");
     }
     else
     {
-        printf("❌ Erro ao adicionar conteudo (Codigo: %d)!\n", resultado);
+        printf("Erro ao adicionar conteudo (Codigo: %d)!\n", resultado);
 
         if (resultado == -2)
         {
-            printf("💡 Solucao: Copie o arquivo para C:\\temp\\ e tente novamente.\n");
+            printf("Solucao: Copie o arquivo para C:\\temp\\ e tente novamente.\n");
             system("mkdir C:\\temp 2>nul");
             printf("Pasta C:\\temp\\ criada. Agora copie manualmente o arquivo.\n");
         }
