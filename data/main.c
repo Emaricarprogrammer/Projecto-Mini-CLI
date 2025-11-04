@@ -515,9 +515,10 @@ void menuDownloadConteudos()
         printf("\n=== MENU DOWNLOAD GITHUB ===\n");
         printf("1. Ver estrutura de pastas no GitHub\n");
         printf("2. Baixar arquivo especifico do GitHub\n");
-        printf("3. Baixar todos os arquivos de uma disciplina\n");
-        printf("4. Listar disciplinas disponiveis\n");
-        printf("5. Conteudos locais (ja baixados)\n");
+        // printf("3. Baixar TODOS os arquivos de uma disciplina\n");
+        // printf("4. Baixar TODAS as disciplinas (COMPLETO)\n");
+        printf("3. Listar disciplinas disponiveis\n");
+        printf("4. Conteudos locais (ja baixados)\n");
         printf("0. Voltar ao menu principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -561,38 +562,72 @@ void menuDownloadConteudos()
             break;
         }
 
+            // case 3:
+            // {
+            //     printf("\n=== BAIXAR TODOS OS ARQUIVOS DE UMA DISCIPLINA ===\n");
+
+            //     char disciplina[MAX_DISCIPLINA];
+            //     char pasta_destino[MAX_CAMINHO];
+
+            //     printf("Digite o nome da disciplina (exatamente como no GitHub): ");
+            //     fgets(disciplina, sizeof(disciplina), stdin);
+            //     disciplina[strcspn(disciplina, "\n")] = 0;
+
+            //     printf("Pasta de destino (Enter para C:\\Downloads): ");
+            //     fgets(pasta_destino, sizeof(pasta_destino), stdin);
+            //     pasta_destino[strcspn(pasta_destino, "\n")] = 0;
+
+            //     if (strlen(pasta_destino) == 0)
+            //     {
+            //         strcpy(pasta_destino, "C:\\Downloads");
+            //     }
+
+            //     printf("\nIniciando download de TODOS os arquivos...\n");
+            //     baixarDisciplinaGitHub(disciplina, pasta_destino);
+            //     break;
+            // }
+
+            // case 4:
+            // {
+            //     printf("\n=== BAIXAR TODAS AS DISCIPLINAS (DOWNLOAD COMPLETO) ===\n");
+            //     printf("AVISO: Esta operacao pode demorar varios minutos.\n");
+            //     printf("Deseja continuar? (s/n): ");
+
+            //     char confirmacao = getchar();
+            //     limparBuffer();
+
+            //     if (confirmacao == 's' || confirmacao == 'S')
+            //     {
+            //         char pasta_destino[MAX_CAMINHO];
+
+            //         printf("Pasta de destino (Enter para C:\\Downloads): ");
+            //         fgets(pasta_destino, sizeof(pasta_destino), stdin);
+            //         pasta_destino[strcspn(pasta_destino, "\n")] = 0;
+
+            //         if (strlen(pasta_destino) == 0)
+            //         {
+            //             strcpy(pasta_destino, "C:\\Downloads");
+            //         }
+
+            //         printf("\nIniciando download COMPLETO...\n");
+            //         printf("Isso pode demorar alguns minutos...\n");
+
+            //         baixarTodasDisciplinasGitHub(pasta_destino);
+            //     }
+            //     else
+            //     {
+            //         printf("Download cancelado.\n");
+            //     }
+            //     break;
+            // }
+
         case 3:
-        {
-            printf("\n=== BAIXAR DISCIPLINA DO GITHUB ===\n");
-            printf("Esta opcao cria a pasta da disciplina para organizar seus downloads.\n");
-
-            char disciplina[MAX_DISCIPLINA];
-            char pasta_destino[MAX_CAMINHO];
-
-            printf("Digite o nome da disciplina (exatamente como no GitHub): ");
-            fgets(disciplina, sizeof(disciplina), stdin);
-            disciplina[strcspn(disciplina, "\n")] = 0;
-
-            printf("Pasta de destino (Enter para C:\\Downloads): ");
-            fgets(pasta_destino, sizeof(pasta_destino), stdin);
-            pasta_destino[strcspn(pasta_destino, "\n")] = 0;
-
-            if (strlen(pasta_destino) == 0)
-            {
-                strcpy(pasta_destino, "C:\\Downloads");
-            }
-
-            baixarDisciplinaGitHub(disciplina, pasta_destino);
-            break;
-        }
-
-        case 4:
         {
             listarDisciplinasGitHub();
             break;
         }
 
-        case 5:
+        case 4:
         {
             printf("\n=== CONTEUDOS LOCAIS ===\n");
             if (listaConteudos.num_conteudos == 0)

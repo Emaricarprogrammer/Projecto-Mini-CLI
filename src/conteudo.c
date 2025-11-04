@@ -548,42 +548,215 @@ int listarConteudosDoGitHub()
     return 1;
 }
 
-int baixarTodosConteudosGitHub(const char *pasta_destino)
+int obterListaArquivosGitHub(const char *disciplina, char arquivos[][MAX_NOME_ARQUIVO], int max_arquivos)
 {
-    printf("\n=== BAIXAR TODOS OS CONTEUDOS DO GITHUB ===\n");
-    printf("AVISO: Esta funcao requer que voce saiba os nomes exatos dos arquivos.\n");
-    printf("Use primeiro a opcao 1 para ver a estrutura, depois a opcao 2 para baixar arquivos especificos.\n");
+    printf("Buscando arquivos da disciplina: %s\n", disciplina);
 
-    char comando_mkdir[MAX_CAMINHO];
-    snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_destino);
-    system(comando_mkdir);
+    // URL da pasta da disciplina no GitHub
+    char url_github[MAX_CAMINHO];
+    snprintf(url_github, sizeof(url_github),
+             "https://api.github.com/repos/Emaricarprogrammer/Projecto-Mini-CLI/contents/data/conteudos/%s?ref=arturDev929",
+             disciplina);
 
-    printf("Pasta de destino criada: %s\n", pasta_destino);
-    printf("Agora use a opcao 2 para baixar arquivos especificos.\n");
+    printf("URL da API: %s\n", url_github);
 
-    return 0;
+    // Baixar a lista de arquivos usando a API do GitHub
+    char comando_curl[MAX_CAMINHO * 2];
+    char arquivo_temp[] = "temp_lista.json";
+
+    snprintf(comando_curl, sizeof(comando_curl),
+             "curl -s -H \"Accept: application/vnd.github.v3+json\" \"%s\" > %s",
+             url_github, arquivo_temp);
+
+    int resultado = system(comando_curl);
+
+    if (resultado != 0)
+    {
+        printf("Erro ao buscar lista de arquivos. Tentando metodo alternativo...\n");
+
+        // Metodo alternativo: tentar listar arquivos conhecidos
+        const char *arquivos_conhecidos[] = {
+            "lista_exercicios.pdf", "slides_aula.pdf", "projeto_final.pdf",
+            "exercicios_resolvidos.pdf", "material_estudo.txt", "guia_estudo.pdf"};
+
+        int count = 0;
+        for (int i = 0; i < 6 && count < max_arquivos; i++)
+        {
+            // Verificar se o arquivo existe tentando baixar
+            char url_teste[MAX_CAMINHO];
+            snprintf(url_teste, sizeof(url_teste),
+                     "https://raw.githubusercontent.com/Emaricarprogrammer/Projecto-Mini-CLI/arturDev929/data/conteudos/%s/%s",
+                     disciplina, arquivos_conhecidos[i]);
+
+            char comando_teste[MAX_CAMINHO * 2];
+            snprintf(comando_teste, sizeof(comando_teste),
+                     "curl -s -I \"%s\" | findstr \"200 OK\"", url_teste);
+
+            FILE *pipe = _popen(comando_teste, "r");
+            if (pipe != NULL)
+            {
+                char buffer[256];
+                if (fgets(buffer, sizeof(buffer), pipe) != NULL)
+                {
+                    strcpy(arquivos[count], arquivos_conhecidos[i]);
+                    count++;
+                }
+                _pclose(pipe);
+            }
+        }
+
+        printf("Encontrados %d arquivos potenciais\n", count);
+        return count;
+    }
+
+    // Ler o arquivo JSON temporario
+    FILE *arquivo = fopen(arquivo_temp, "r");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao ler arquivo temporario\n");
+        return 0;
+    }
+
+    int count = 0;
+    char linha[512];
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL && count < max_arquivos)
+    {
+        // Procurar por "name" no JSON
+        if (strstr(linha, "\"name\"") != NULL)
+        {
+            // Extrair o nome do arquivo
+            char *inicio = strstr(linha, "\"name\"") + 7;
+            char *fim = strchr(inicio, '\"');
+            if (fim != NULL)
+            {
+                *fim = '\0';
+                strcpy(arquivos[count], inicio);
+                count++;
+            }
+        }
+    }
+
+    fclose(arquivo);
+
+    // Remover arquivo temporario
+    remove(arquivo_temp);
+
+    printf("Encontrados %d arquivos na disciplina %s\n", count, disciplina);
+    return count;
 }
 
 int baixarDisciplinaGitHub(const char *disciplina, const char *pasta_destino)
 {
-    printf("\n=== BAIXAR DISCIPLINA: %s ===\n", disciplina);
-    printf("AVISO: Esta funcao requer que voce saiba os nomes dos arquivos.\n");
+    printf("\n=== BAIXANDO TODOS OS ARQUIVOS DA DISCIPLINA: %s ===\n", disciplina);
 
+    // Criar pasta de destino
     char comando_mkdir[MAX_CAMINHO];
     snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_destino);
     system(comando_mkdir);
 
+    // Criar subpasta da disciplina
     char pasta_disciplina[MAX_CAMINHO];
     snprintf(pasta_disciplina, sizeof(pasta_disciplina), "%s\\%s", pasta_destino, disciplina);
     snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_disciplina);
     system(comando_mkdir);
 
     printf("Pasta criada: %s\n", pasta_disciplina);
-    printf("Para baixar arquivos, use a opcao 2 e especifique:\n");
-    printf("- Disciplina: %s\n", disciplina);
-    printf("- Nome do arquivo (exato como aparece no GitHub)\n");
 
-    return 0;
+    // Obter lista de arquivos
+    char arquivos[50][MAX_NOME_ARQUIVO];
+    int num_arquivos = obterListaArquivosGitHub(disciplina, arquivos, 50);
+
+    if (num_arquivos == 0)
+    {
+        printf("Nenhum arquivo encontrado para a disciplina %s\n", disciplina);
+        printf("Tentando baixar arquivos comuns...\n");
+
+        // Tentar baixar arquivos comuns
+        const char *arquivos_tentar[] = {
+            "lista_exercicios.pdf", "slides_aula.pdf", "projeto_final.pdf",
+            "exercicios_resolvidos.pdf", "material_estudo.txt", "guia_estudo.pdf",
+            "apostila.pdf", "exercicios.pdf", "resumo.pdf"};
+
+        int baixados = 0;
+        for (int i = 0; i < 9; i++)
+        {
+            printf("Tentando baixar: %s\n", arquivos_tentar[i]);
+            if (baixarConteudoDoGitHub(disciplina, arquivos_tentar[i], pasta_destino) == 0)
+            {
+                baixados++;
+            }
+        }
+
+        printf("\nTotal de arquivos baixados: %d\n", baixados);
+        return baixados;
+    }
+
+    // Baixar cada arquivo
+    int baixados = 0;
+    printf("\nIniciando download de %d arquivos...\n", num_arquivos);
+
+    for (int i = 0; i < num_arquivos; i++)
+    {
+        printf("\n[%d/%d] Baixando: %s\n", i + 1, num_arquivos, arquivos[i]);
+
+        if (baixarConteudoDoGitHub(disciplina, arquivos[i], pasta_destino) == 0)
+        {
+            baixados++;
+        }
+
+        // Pequena pausa para nao sobrecarregar
+        Sleep(500);
+    }
+
+    printf("\n=== DOWNLOAD CONCLUIDO ===\n");
+    printf("Disciplina: %s\n", disciplina);
+    printf("Arquivos baixados: %d de %d\n", baixados, num_arquivos);
+    printf("Pasta: %s\n", pasta_disciplina);
+
+    return baixados;
+}
+
+int baixarTodasDisciplinasGitHub(const char *pasta_destino)
+{
+    printf("\n=== BAIXANDO TODAS AS DISCIPLINAS DO GITHUB ===\n");
+
+    // Criar pasta de destino
+    char comando_mkdir[MAX_CAMINHO];
+    snprintf(comando_mkdir, sizeof(comando_mkdir), "mkdir \"%s\" 2>nul", pasta_destino);
+    system(comando_mkdir);
+
+    const char *disciplinas[] = {
+        "Programacao I",
+        "Analise Matematica",
+        "Logica Matematica",
+        "Ingles Tecnico",
+        "Metodologia de Investigacao Cientifica",
+        "Comunicacao Escrita",
+        "Introducao a Ciencias da Computacao"};
+
+    int total_baixados = 0;
+    int total_disciplinas = 7;
+
+    for (int i = 0; i < total_disciplinas; i++)
+    {
+        printf("\n=== [%d/%d] DISCIPLINA: %s ===\n", i + 1, total_disciplinas, disciplinas[i]);
+
+        int baixados = baixarDisciplinaGitHub(disciplinas[i], pasta_destino);
+        total_baixados += baixados;
+
+        printf("Disciplina %s: %d arquivos baixados\n", disciplinas[i], baixados);
+
+        // Pausa entre disciplinas
+        Sleep(1000);
+    }
+
+    printf("\n=== DOWNLOAD COMPLETO ===\n");
+    printf("Total de disciplinas: %d\n", total_disciplinas);
+    printf("Total de arquivos baixados: %d\n", total_baixados);
+    printf("Pasta principal: %s\n", pasta_destino);
+
+    return total_baixados;
 }
 
 void listarDisciplinasGitHub()

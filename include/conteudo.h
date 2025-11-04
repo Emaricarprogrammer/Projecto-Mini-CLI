@@ -38,8 +38,8 @@ int baixarConteudosPorDisciplina(const ListaConteudos *lista, const char *discip
 
 int baixarConteudoDoGitHub(const char *disciplina, const char *nome_arquivo, const char *pasta_destino);
 int listarConteudosDoGitHub();
-int baixarTodosConteudosGitHub(const char *pasta_destino);
 int baixarDisciplinaGitHub(const char *disciplina, const char *pasta_destino);
 void listarDisciplinasGitHub();
+int listarArquivosDisciplinaGitHub(const char *disciplina, char arquivos[][MAX_NOME_ARQUIVO], int max_arquivos);
 
 #endif
