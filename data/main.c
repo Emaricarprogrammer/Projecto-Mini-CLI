@@ -733,6 +733,6 @@ int main()
 }
 
 /*
-gcc data\main.c src\alunos.c src\grupos.c src\conteudo.c src\delegado.c -Iinclude -o sistema.exe
-sistema.exe
+gcc data\main.c src\alunos.c src\grupos.c src\conteudo.c src\delegado.c -Iinclude -o Aplication.exe
+Aplication.exe
 */
