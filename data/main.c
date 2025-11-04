@@ -8,18 +8,19 @@
 #define grupo_numero "10"
 #define lider "Artur M. Paulo - 20250497"
 #define analist "Emanuel Antonio - 20250072"
-#define programmer "Alberto dos Santos- 2025####"
+#define programmer "Alberto dos Santos- 20251483"
 
 // Variaveis globais
 ListaAlunos listaAlunos;
 ListaGrupos listaGrupos;
 ListaConteudos listaConteudos;
 
+void menuDownloadConteudos();
+
 void testarCaminhoEspecifico()
 {
     printf("\n=== TESTAR CAMINHO ESPECIFICO ===\n");
 
-    // Teste direto com o caminho que você quer
     const char *caminho_teste = "A:\\Delegada\\Lista.pdf";
 
     printf("Testando acesso ao arquivo: %s\n", caminho_teste);
@@ -27,23 +28,21 @@ void testarCaminhoEspecifico()
     FILE *arquivo = fopen(caminho_teste, "rb");
     if (arquivo == NULL)
     {
-        printf("❌ ERRO: Arquivo não pode ser acessado!\n");
-        printf("Solução: Copie o arquivo para C:\\temp\\ e use esse caminho.\n");
+        printf("ERRO: Arquivo nao pode ser acessado!\n");
+        printf("Solucao: Copie o arquivo para C:\\temp\\ e use esse caminho.\n");
 
-        // Criar pasta temp
         system("mkdir C:\\temp 2>nul");
-        printf("Pasta C:\\temp\\ criada. Copie o arquivo para lá.\n");
+        printf("Pasta C:\\temp\\ criada. Copie o arquivo para la.\n");
     }
     else
     {
-        printf("✅ Arquivo acessível com sucesso!\n");
+        printf("Arquivo acessivel com sucesso!\n");
         fclose(arquivo);
 
-        // Tentar adicionar automaticamente
         printf("Tentando adicionar automaticamente...\n");
         if (adicionarConteudo(&listaConteudos, caminho_teste, "Lista da Delegada - Teste", "Programacao I") == 0)
         {
-            printf("✅ Conteudo adicionado com sucesso!\n");
+            printf("Conteudo adicionado com sucesso!\n");
         }
     }
 }
@@ -156,7 +155,6 @@ void menuGerarGrupos()
 
     printf("\nGrupos existentes: %d\n", listaGrupos.num_grupos);
 
-    // Salvar numero de grupos antes de criar novos
     int grupos_antes = listaGrupos.num_grupos;
 
     int resultado = gerarGruposAutomaticos(&listaGrupos, &listaAlunos, elementos_por_grupo, disciplina);
@@ -166,7 +164,6 @@ void menuGerarGrupos()
         printf("\n%d novos grupos criados com sucesso!\n", resultado);
         printf("Total de grupos agora: %d\n", listaGrupos.num_grupos);
 
-        // Mostrar apenas os novos grupos criados
         printf("\n=== NOVOS GRUPOS CRIADOS ===\n");
         for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
         {
@@ -187,7 +184,6 @@ void menuGerarGrupos()
             printf("-------------------\n");
         }
 
-        // ENVIAR EMAILS AUTOMATICAMENTE para os novos grupos
         printf("\n=== ENVIANDO EMAILS AUTOMATICAMENTE ===\n");
         for (int i = grupos_antes; i < listaGrupos.num_grupos; i++)
         {
@@ -195,7 +191,6 @@ void menuGerarGrupos()
             enviarEmailGrupoEspecifico(&listaGrupos, id_grupo);
         }
 
-        // Salvar grupos automaticamente
         salvarGrupos(&listaGrupos, "data/grupos.txt");
     }
     else if (resultado == -1)
@@ -236,7 +231,6 @@ void menuEscolherLider()
 
     escolherLiderGrupo(&listaGrupos, id_grupo);
 
-    // Salvar apos escolher lider
     salvarGrupos(&listaGrupos, "data/grupos.txt");
 }
 
@@ -250,7 +244,6 @@ void menuAdicionarConteudo()
 
     printf("Opcoes:\n");
     printf("1. Digitar caminho\n");
-    // printf("2. Usar caminho A:\\\\Delegada\\\\Lista.pdf\n");
     printf("Escolha: ");
 
     int opcao;
@@ -265,9 +258,6 @@ void menuAdicionarConteudo()
     }
     else
     {
-        // // Usar o caminho específico que você quer
-        // strcpy(caminho_local, "A:\\Delegada\\Lista.pdf");
-        // printf("Usando caminho: %s\n", caminho_local);
         printf("Opcao Errada!");
     }
 
@@ -428,7 +418,6 @@ void subMenuConteudos()
         printf("1. Adicionar conteudo\n");
         printf("2. Ver conteudos adicionados\n");
         printf("3. Fazer push para GitHub\n");
-        // printf("4. Testar caminho A:\\\\Delegada\\\\\n");
         printf("0. Voltar ao menu principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
@@ -445,9 +434,6 @@ void subMenuConteudos()
         case 3:
             menuFazerPushGitHub();
             break;
-        // case 4:
-        //     testarCaminhoEspecifico();
-        //     break;
         case 0:
             printf("Voltando ao menu principal...\n");
             break;
@@ -519,6 +505,150 @@ void subMenuDados()
     } while (opcao != 0);
 }
 
+void menuDownloadConteudos()
+{
+    printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
+
+    int opcao;
+    do
+    {
+        printf("\n=== MENU DOWNLOAD GITHUB ===\n");
+        printf("1. Ver estrutura de pastas no GitHub\n");
+        printf("2. Baixar arquivo especifico do GitHub\n");
+        printf("3. Baixar todos os arquivos de uma disciplina\n");
+        printf("4. Listar disciplinas disponiveis\n");
+        printf("5. Conteudos locais (ja baixados)\n");
+        printf("0. Voltar ao menu principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limparBuffer();
+
+        switch (opcao)
+        {
+        case 1:
+        {
+            listarConteudosDoGitHub();
+            break;
+        }
+
+        case 2:
+        {
+            printf("\n=== BAIXAR ARQUIVO ESPECIFICO DO GITHUB ===\n");
+
+            char disciplina[MAX_DISCIPLINA];
+            char nome_arquivo[MAX_NOME_ARQUIVO];
+            char pasta_destino[MAX_CAMINHO];
+
+            printf("Digite o nome da disciplina (exatamente como no GitHub): ");
+            fgets(disciplina, sizeof(disciplina), stdin);
+            disciplina[strcspn(disciplina, "\n")] = 0;
+
+            printf("Digite o nome do arquivo (com extensao, exatamente como no GitHub): ");
+            fgets(nome_arquivo, sizeof(nome_arquivo), stdin);
+            nome_arquivo[strcspn(nome_arquivo, "\n")] = 0;
+
+            printf("Pasta de destino (Enter para C:\\Downloads): ");
+            fgets(pasta_destino, sizeof(pasta_destino), stdin);
+            pasta_destino[strcspn(pasta_destino, "\n")] = 0;
+
+            if (strlen(pasta_destino) == 0)
+            {
+                strcpy(pasta_destino, "C:\\Downloads");
+            }
+
+            printf("\nIniciando download...\n");
+            baixarConteudoDoGitHub(disciplina, nome_arquivo, pasta_destino);
+            break;
+        }
+
+        case 3:
+        {
+            printf("\n=== BAIXAR DISCIPLINA DO GITHUB ===\n");
+            printf("Esta opcao cria a pasta da disciplina para organizar seus downloads.\n");
+
+            char disciplina[MAX_DISCIPLINA];
+            char pasta_destino[MAX_CAMINHO];
+
+            printf("Digite o nome da disciplina (exatamente como no GitHub): ");
+            fgets(disciplina, sizeof(disciplina), stdin);
+            disciplina[strcspn(disciplina, "\n")] = 0;
+
+            printf("Pasta de destino (Enter para C:\\Downloads): ");
+            fgets(pasta_destino, sizeof(pasta_destino), stdin);
+            pasta_destino[strcspn(pasta_destino, "\n")] = 0;
+
+            if (strlen(pasta_destino) == 0)
+            {
+                strcpy(pasta_destino, "C:\\Downloads");
+            }
+
+            baixarDisciplinaGitHub(disciplina, pasta_destino);
+            break;
+        }
+
+        case 4:
+        {
+            listarDisciplinasGitHub();
+            break;
+        }
+
+        case 5:
+        {
+            printf("\n=== CONTEUDOS LOCAIS ===\n");
+            if (listaConteudos.num_conteudos == 0)
+            {
+                printf("Nenhum conteudo local disponivel.\n");
+            }
+            else
+            {
+                listarConteudosParaDownload(&listaConteudos);
+
+                int sub_opcao;
+                printf("\nDeseja baixar algum conteudo local? (1=Sim, 0=Nao): ");
+                scanf("%d", &sub_opcao);
+                limparBuffer();
+
+                if (sub_opcao == 1)
+                {
+                    int id_conteudo;
+                    char pasta_destino[MAX_CAMINHO];
+
+                    printf("Digite o ID do conteudo para baixar: ");
+                    scanf("%d", &id_conteudo);
+                    limparBuffer();
+
+                    printf("Pasta de destino (Enter para C:\\Downloads): ");
+                    fgets(pasta_destino, sizeof(pasta_destino), stdin);
+                    pasta_destino[strcspn(pasta_destino, "\n")] = 0;
+
+                    if (strlen(pasta_destino) == 0)
+                    {
+                        strcpy(pasta_destino, "C:\\Downloads");
+                    }
+
+                    baixarConteudo(&listaConteudos, id_conteudo, pasta_destino);
+                }
+            }
+            break;
+        }
+
+        case 0:
+            printf("Voltando ao menu principal...\n");
+            break;
+
+        default:
+            printf("Opcao invalida!\n");
+            break;
+        }
+
+        if (opcao != 0)
+        {
+            printf("\nPressione Enter para continuar...");
+            getchar();
+        }
+    } while (opcao != 0);
+}
+
 void menuPrincipal()
 {
     printf("\n============================================\n");
@@ -539,12 +669,10 @@ int main()
 {
     int option;
 
-    // Inicializar as listas
     inicializarLista(&listaAlunos);
     inicializarListaGrupos(&listaGrupos);
     inicializarListaConteudos(&listaConteudos);
 
-    // Tentar carregar dados automaticamente
     if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
     {
         printf("Dados de alunos carregados! (%d alunos)\n", listaAlunos.quantidade);
@@ -594,8 +722,7 @@ int main()
             break;
 
         case 5:
-            printf("\n=== DOWNLOAD DE CONTEUDOS ===\n");
-            printf("Esta funcionalidade esta em desenvolvimento...\n");
+            menuDownloadConteudos();
             break;
 
         case 6:
@@ -604,7 +731,6 @@ int main()
             break;
 
         case 0:
-            // Salvar automaticamente ao sair
             salvarLista(&listaAlunos, "data/alunos.txt");
             salvarGrupos(&listaGrupos, "data/grupos.txt");
             printf("\nSaindo do sistema... Dados salvos automaticamente.\n");

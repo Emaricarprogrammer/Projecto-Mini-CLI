@@ -22,7 +22,6 @@ typedef struct
     int num_conteudos;
 } ListaConteudos;
 
-// Funcoes para gestao de conteudos
 void inicializarListaConteudos(ListaConteudos *lista);
 int adicionarConteudo(ListaConteudos *lista, const char *caminho_local, const char *descricao, const char *disciplina);
 void exibirConteudos(const ListaConteudos *lista);
@@ -32,5 +31,15 @@ int executarComandoGit(const char *comando);
 void limparBufferConteudo();
 void menuDisciplinas();
 const char *obterNomeDisciplina(int opcao);
+
+void listarConteudosParaDownload(const ListaConteudos *lista);
+int baixarConteudo(const ListaConteudos *lista, int id_conteudo, const char *pasta_destino);
+int baixarConteudosPorDisciplina(const ListaConteudos *lista, const char *disciplina, const char *pasta_destino);
+
+int baixarConteudoDoGitHub(const char *disciplina, const char *nome_arquivo, const char *pasta_destino);
+int listarConteudosDoGitHub();
+int baixarTodosConteudosGitHub(const char *pasta_destino);
+int baixarDisciplinaGitHub(const char *disciplina, const char *pasta_destino);
+void listarDisciplinasGitHub();
 
 #endif
