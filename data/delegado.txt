@@ -1,0 +1,29 @@
+=== RESULTADOS DA ELEICAO ===
+Total de votos: 4
+Votos em branco: 0
+Eleicao realizada: SIM
+
+=== DELEGADO ELEITO ===
+Nome: Almiro Joao
+Numero: 20250000
+Email: almiro@gmail.com
+Contacto: 938393823
+
+=== SUBDELEGADOS ELEITOS ===
+Subdelegado 1:
+Nome: Almiro Joao
+Numero: 20250000
+Email: almiro@gmail.com
+Contacto: 938393823
+---
+Subdelegado 2:
+Nome: Artur Macumba Paulo
+Numero: 20250497
+Email: arturpaulo929@gmail.com
+Contacto: 929277043
+
+=== TODOS OS CANDIDATOS E VOTOS ===
+Candidato: Artur Macumba Paulo | Numero: 20250497 | Cargo: Delegado | Votos: 0
+Candidato: Almiro Joao | Numero: 20250000 | Cargo: Delegado | Votos: 2
+Candidato: Artur Macumba Paulo | Numero: 20250497 | Cargo: Subdelegado | Votos: 0
+Candidato: Almiro Joao | Numero: 20250000 | Cargo: Subdelegado | Votos: 2

@@ -3,6 +3,7 @@
 #include "alunos.h"
 #include "grupos.h"
 #include "conteudo.h"
+#include "delegado.h"
 
 #define name_project "Mini CLI para gestao de turmas."
 #define grupo_numero "10"
@@ -14,6 +15,7 @@
 ListaAlunos listaAlunos;
 ListaGrupos listaGrupos;
 ListaConteudos listaConteudos;
+Eleicao eleicao;
 
 void menuDownloadConteudos();
 
@@ -515,8 +517,6 @@ void menuDownloadConteudos()
         printf("\n=== MENU DOWNLOAD GITHUB ===\n");
         printf("1. Ver estrutura de pastas no GitHub\n");
         printf("2. Baixar arquivo especifico do GitHub\n");
-        // printf("3. Baixar TODOS os arquivos de uma disciplina\n");
-        // printf("4. Baixar TODAS as disciplinas (COMPLETO)\n");
         printf("3. Listar disciplinas disponiveis\n");
         printf("4. Conteudos locais (ja baixados)\n");
         printf("0. Voltar ao menu principal\n");
@@ -561,65 +561,6 @@ void menuDownloadConteudos()
             baixarConteudoDoGitHub(disciplina, nome_arquivo, pasta_destino);
             break;
         }
-
-            // case 3:
-            // {
-            //     printf("\n=== BAIXAR TODOS OS ARQUIVOS DE UMA DISCIPLINA ===\n");
-
-            //     char disciplina[MAX_DISCIPLINA];
-            //     char pasta_destino[MAX_CAMINHO];
-
-            //     printf("Digite o nome da disciplina (exatamente como no GitHub): ");
-            //     fgets(disciplina, sizeof(disciplina), stdin);
-            //     disciplina[strcspn(disciplina, "\n")] = 0;
-
-            //     printf("Pasta de destino (Enter para C:\\Downloads): ");
-            //     fgets(pasta_destino, sizeof(pasta_destino), stdin);
-            //     pasta_destino[strcspn(pasta_destino, "\n")] = 0;
-
-            //     if (strlen(pasta_destino) == 0)
-            //     {
-            //         strcpy(pasta_destino, "C:\\Downloads");
-            //     }
-
-            //     printf("\nIniciando download de TODOS os arquivos...\n");
-            //     baixarDisciplinaGitHub(disciplina, pasta_destino);
-            //     break;
-            // }
-
-            // case 4:
-            // {
-            //     printf("\n=== BAIXAR TODAS AS DISCIPLINAS (DOWNLOAD COMPLETO) ===\n");
-            //     printf("AVISO: Esta operacao pode demorar varios minutos.\n");
-            //     printf("Deseja continuar? (s/n): ");
-
-            //     char confirmacao = getchar();
-            //     limparBuffer();
-
-            //     if (confirmacao == 's' || confirmacao == 'S')
-            //     {
-            //         char pasta_destino[MAX_CAMINHO];
-
-            //         printf("Pasta de destino (Enter para C:\\Downloads): ");
-            //         fgets(pasta_destino, sizeof(pasta_destino), stdin);
-            //         pasta_destino[strcspn(pasta_destino, "\n")] = 0;
-
-            //         if (strlen(pasta_destino) == 0)
-            //         {
-            //             strcpy(pasta_destino, "C:\\Downloads");
-            //         }
-
-            //         printf("\nIniciando download COMPLETO...\n");
-            //         printf("Isso pode demorar alguns minutos...\n");
-
-            //         baixarTodasDisciplinasGitHub(pasta_destino);
-            //     }
-            //     else
-            //     {
-            //         printf("Download cancelado.\n");
-            //     }
-            //     break;
-            // }
 
         case 3:
         {
@@ -707,6 +648,7 @@ int main()
     inicializarLista(&listaAlunos);
     inicializarListaGrupos(&listaGrupos);
     inicializarListaConteudos(&listaConteudos);
+    inicializarEleicao(&eleicao);
 
     if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
     {
@@ -717,6 +659,9 @@ int main()
     {
         printf("Grupos carregados! (%d grupos)\n", listaGrupos.num_grupos);
     }
+
+    // CARREGAR RESULTADOS DA ELEICAO
+    carregarResultadosEleicao(&eleicao, "data/delegado.txt");
 
     printf("==========================================\n");
     printf("%s\n", name_project);
@@ -762,7 +707,7 @@ int main()
 
         case 6:
             printf("\n=== ELEGER DELEGADO(A) ===\n");
-            printf("Esta funcionalidade esta em desenvolvimento...\n");
+            realizarEleicao(&eleicao, &listaAlunos);
             break;
 
         case 0:
@@ -788,6 +733,6 @@ int main()
 }
 
 /*
-gcc data\main.c src\alunos.c src\grupos.c src\conteudo.c -Iinclude -o sistema.exe
+gcc data\main.c src\alunos.c src\grupos.c src\conteudo.c src\delegado.c -Iinclude -o sistema.exe
 sistema.exe
 */
