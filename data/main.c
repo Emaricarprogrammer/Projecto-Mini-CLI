@@ -6,10 +6,10 @@
 #include "delegado.h"
 
 #define name_project "Mini CLI para gestao de turmas."
-#define grupo_numero "10"
+#define grupo_numero "19"
 #define lider "Artur M. Paulo - 20250497"
 #define analist "Emanuel Antonio - 20250072"
-#define programmer "Alberto dos Santos- 20251483"
+#define programmer "Alberto Zongo dos Santos- 20251483"
 
 // Variaveis globais
 ListaAlunos listaAlunos;
