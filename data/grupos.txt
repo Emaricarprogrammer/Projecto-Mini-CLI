@@ -1,7 +1,4 @@
-PROXIMO_ID:3
-Grupo:ID:1;Numero:1;Disciplina:PT;Tema:PT;Lider:0
-Aluno:Artur Macumba Paulo;20250497;arturpaulo929@gmail.com;929277043
-FIM_GRUPO
-Grupo:ID:2;Numero:1;Disciplina:PT;Tema:12345;Lider:0
-Aluno:Artur Macumba Paulo;20250497;arturpaulo929@gmail.com;929277043
+PROXIMO_ID:2
+Grupo:ID:1;Numero:1;Disciplina:Programacao I;Tema:Oi;Lider:0
+Aluno:Artur Paulo;20250497;arturpaulo929@gmail.com;929277043
 FIM_GRUPO

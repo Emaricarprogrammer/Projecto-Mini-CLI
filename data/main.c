@@ -650,18 +650,18 @@ int main()
     inicializarListaConteudos(&listaConteudos);
     inicializarEleicao(&eleicao);
 
-    if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
-    {
-        printf("Dados de alunos carregados! (%d alunos)\n", listaAlunos.quantidade);
-    }
+    // if (carregarLista(&listaAlunos, "data/alunos.txt") == 0)
+    // {
+    //     printf("Dados de alunos carregados! (%d alunos)\n", listaAlunos.quantidade);
+    // }
 
-    if (carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
-    {
-        printf("Grupos carregados! (%d grupos)\n", listaGrupos.num_grupos);
-    }
+    // if (carregarGrupos(&listaGrupos, "data/grupos.txt") == 0)
+    // {
+    //     printf("Grupos carregados! (%d grupos)\n", listaGrupos.num_grupos);
+    // }
 
     // CARREGAR RESULTADOS DA ELEICAO
-    carregarResultadosEleicao(&eleicao, "data/delegado.txt");
+    // carregarResultadosEleicao(&eleicao, "data/delegado.txt");
 
     printf("==========================================\n");
     printf("%s\n", name_project);
