@@ -61,6 +61,102 @@ int main(void)
                     makePushToTheRepo("P1", "Novos conteudos", finalPath);
                 }
             }
+            if (branch == 2)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/CE/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("CE", "Novos conteudos", finalPath);
+                }
+            }
+            if (branch == 3)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/AM1/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("AM1", "Novos conteudos", finalPath);
+                }
+            }
+            if (branch == 4)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/LM/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("LM", "Novos conteudos", finalPath);
+                }
+            }
+            if (branch == 5)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/IT/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("IT", "Novos conteudos", finalPath);
+                }
+            }
+            if (branch == 6)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/MIC/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("MIC", "Novos conteudos", finalPath);
+                }
+            }
+            if (branch == 7)
+            {
+                printf("Digite o nome do ficheiro a enviar (teste.txt): ");
+                scanf("%s", relativePath);
+
+                snprintf(finalPath, sizeof(finalPath), "../Topics/ICC/%s", relativePath);
+
+                if (access(finalPath, F_OK) != 0)
+                {
+                    printf("❌ Ficheiro não encontrado: %s\n", finalPath);
+                }
+                else
+                {
+                    makePushToTheRepo("ICC", "Novos conteudos", finalPath);
+                }
+            }
             else if (branch != 8)
             {
                 printf("Opção inválida!\n");
@@ -76,7 +172,7 @@ int main(void)
             printf("\n 3- Análise matemática");
             printf("\n 4- Lógica matemática");
             printf("\n 5- Inglês técnico");
-            printf("\n 6- Mic");
+            printf("\n 6- MIC");
             printf("\n 7- ICC");
             printf("\n 8 - Sair\n");
 
@@ -87,6 +183,36 @@ int main(void)
             {
                 system("clear");
                 downloadTopics("P1");
+            }
+            if (branch == 2)
+            {
+                system("clear");
+                downloadTopics("CE");
+            }
+            if (branch == 3)
+            {
+                system("clear");
+                downloadTopics("AM1");
+            }
+            if (branch == 4)
+            {
+                system("clear");
+                downloadTopics("LM");
+            }
+            if (branch == 5)
+            {
+                system("clear");
+                downloadTopics("IT");
+            }
+            if (branch == 6)
+            {
+                system("clear");
+                downloadTopics("MIC");
+            }
+            if (branch == 7)
+            {
+                system("clear");
+                downloadTopics("ICC");
             }
             else if (branch != 8)
             {
@@ -101,7 +227,7 @@ int main(void)
             break;
 
         case 4:
-            printf("Delegado(a) eleito(a) com sucesso!\n");
+            printf("Funcionalidade em desenvolvimento!\n");
             break;
 
         case 5:
@@ -111,9 +237,6 @@ int main(void)
         default:
             printf("Opção inválida!\n");
         }
-
-        sleep(1);
-        system("clear");
 
     } while (option != 5);
 

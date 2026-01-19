@@ -7,6 +7,7 @@
 void makePushToTheRepo(const char *branch, const char *commitMessage, const char *filePath)
 {
     char pushCommand[256];
+
     snprintf(pushCommand, sizeof(pushCommand), "git checkout %s 2>/dev/null || git checkout -b %s", branch, branch);
     if(system(pushCommand) != 0)
     {
@@ -27,13 +28,7 @@ void makePushToTheRepo(const char *branch, const char *commitMessage, const char
         printf("❌ Erro ao adicionar arquivos (%s)\n", filePath ? filePath : ".");
         return;
     }
-    if(system(pushCommand) != 0)
-    {
-        printf("Erro ao atualizar a branch %s\n", branch);
-        return;
-    }
-
-    snprintf(pushCommand, sizeof(pushCommand), "git commit -a -m '%s'", commitMessage);
+    snprintf(pushCommand, sizeof(pushCommand),"git commit -m \"%s\"", commitMessage);
     if(system(pushCommand) != 0)
     {
         printf("Erro ao commitar os conteudos.\n");
@@ -52,7 +47,20 @@ void makePushToTheRepo(const char *branch, const char *commitMessage, const char
 void downloadTopics(const char *branch)
 {
     char command[512];
+    const char *home =
+    
+    #ifdef _WIN32
+        getenv("USERPROFILE");
+    #else
+        getenv("HOME");
+    #endif
 
+    if (!home)
+    {
+        printf("❌ Não foi possível localizar o diretório do utilizador.\n");
+        return;
+    }
+    
     printf("Baixando conteúdos da cadeira de %s (somente Topics/%s)...\n", branch, branch);
 
     snprintf(command, sizeof(command),
@@ -70,12 +78,16 @@ void downloadTopics(const char *branch)
         printf("❌ Erro ao configurar sparse checkout.\n");
         return;
     }
-    snprintf(command, sizeof(command),
-        "mkdir -p ./Topics && cp -r tmp_repo/src/Topics/%s ./Topics/ && rm -rf tmp_repo", branch);
-    if (system(command) != 0)
-    {
-        printf("⚠️  Falha ao mover pasta para raiz do projeto.\n");
-        return;
-    }
-    printf("Conteúdo de Topics/P1 baixado com sucesso!\n");
+        snprintf(command, sizeof(command),
+    "mkdir -p \"%s/GestaoTurma/Topics\" && "
+    "cp -r tmp_repo/src/Topics/%s \"%s/GestaoTurma/Topics/\" && "
+    "rm -rf tmp_repo",
+    home, branch, home
+);
+    // if (system(command) != 0)
+    // {
+    //     printf("⚠️  Falha ao mover pasta para raiz do projeto.\n");
+    //     return;
+    // }
+    printf("Conteúdo de Topics/%s baixado com sucesso!\n", branch);
 }
