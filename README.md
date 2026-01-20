@@ -33,26 +33,6 @@ Desenvolver uma **mini CLI (Command Line Interface)** em linguagem **C** para au
 - Com base nessa lista, serão gerados **grupos aleatórios de tamanho configurável**.  
 - Após a criação dos grupos, o sistema deverá enviar uma **notificação via email (SMTP)** para cada aluno, informando seu grupo e colegas.
 
----
-
-### 🔹 Eleição de Delegado(a):
-- Caso nenhum aluno se candidate, o sistema poderá **sortear automaticamente um delegado(a)** entre os estudantes cadastrados.
-
----
-
-## 🧱 Requisitos Não Funcionais
-
-- O código deve seguir padrões de **código limpo (Clean Code)**, com:
-  - Nomes de variáveis e funções claros e descritivos;  
-  - Modularização e separação de responsabilidades em bibliotecas (ex: `alunos.h`, `grupos.h`, `email.h`);  
-  - Estrutura organizada de pastas (`src`, `include`, `data`, etc.).  
-
-- Utilizar um **Makefile** para simplificar a compilação e execução do programa.  
-
-- Garantir que o código seja **portável e de fácil manutenção**, utilizando apenas **bibliotecas padrão da linguagem C** e dependências essenciais (como `libcurl` para envio de emails, se necessário).
-
----
-
 ## 🧩 Descrição Geral do Projeto
 
 O sistema será implementado como uma **interface de linha de comando (CLI)** interativa, onde o usuário poderá navegar pelas opções do menu principal:
